@@ -37,8 +37,9 @@ using std::endl;
 
 	inline char *Surface::index(int x, int y) {
 		if(x < 0 || y < 0 || x >= width || y >= height) {
-			cerr << "ArrayIndexOutOfBoundsException: " << printf("%d,%d", x, y) << endl;
-			exit(-1);
+			//cerr << "ArrayIndexOutOfBoundsException: " << printf("%d,%d", x, y) << endl;
+			//exit(-1);
+			return NULL;
 		}
 		return raster + (3 * (width * y + x));
 	}
@@ -76,6 +77,8 @@ using std::endl;
 	}
 
 	inline void Graphics::setPixel(char* pixel) {
+		if(!pixel)
+			return;
 		pixel[C_R] = r;
 		pixel[C_G] = g;
 		pixel[C_B] = b;

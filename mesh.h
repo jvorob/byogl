@@ -26,8 +26,10 @@ class Mesh {
 		void addVert(Vect4 v);
 		void addFace(Face f); 
 
-		void loadFromObjFile(std::ifstream file);
+		void loadFromObjFile(char *filename);
 
+	private:
+		char *myStrtok(char *s, char delim);
 };
 
 #endif
