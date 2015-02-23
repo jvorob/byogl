@@ -100,7 +100,7 @@ void Mesh::loadFromObjFile(char *filename) {
 				;
 			f.v3 = strtol(temp, &temp, 0);
 
-			std::cerr << f.v1 << ", " << f.v2 << ", " << f.v3 << "\n";
+			//std::cerr << f.v1 << ", " << f.v2 << ", " << f.v3 << "\n";
 
 			addFace(f);
 			//std::cerr << "Woo! f" << endl;
