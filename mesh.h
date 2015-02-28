@@ -4,10 +4,8 @@
 #include <vector>
 #include <fstream>
 
-class Vect4 {
-	public:
-		double x, y, z, h;
-};
+#include "matrix.h"
+
 
 class Face {
 	public:
@@ -18,6 +16,7 @@ class Face {
 class Mesh {
 	public:
 		std::vector<Vect4> verts;
+		std::vector<Vect4> transVerts; //Temporary storage for transformed vertices
 		std::vector<Face> faces;
 		
 		Mesh();
@@ -27,6 +26,8 @@ class Mesh {
 		void addFace(Face f); 
 
 		void loadFromObjFile(char *filename);
+
+		void applyTransform(Mat4 m); //Doesn't modify the verts, only transVerts
 
 	private:
 		char *myStrtok(char *s, char delim);

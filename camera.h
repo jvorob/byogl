@@ -2,6 +2,7 @@
 #define CAMERA_H
 
 #include "mesh.h"
+#include "matrix.h"
 #include "drawing.h"
 
 class Camera { 

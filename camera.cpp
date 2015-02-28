@@ -7,34 +7,25 @@ Camera::Camera(double fov) {
 }
 
 void Camera::renderMesh(Mesh *m, Surface *s) {
+
 	Graphics g (s);
 
+
+	Mat4 temp = Mat4::IdentityMat();
+	temp = Mat4::mult(Mat4::ScaleMat(400, 500, 400), temp);
+	temp = Mat4::mult(Mat4::TranslateMat(500, 300, 0), temp);
+
+	m->applyTransform(temp);
+
 	for(int i = 0; i < m->faces.size(); i++) {
-		Vect4 v1 = m->verts[m->faces[i].v1 - 1];
-		Vect4 v2 = m->verts[m->faces[i].v2 - 1];
-		Vect4 v3 = m->verts[m->faces[i].v3 - 1];
+		Vect4 v1 = m->transVerts[m->faces[i].v1 - 1];
+		Vect4 v2 = m->transVerts[m->faces[i].v2 - 1];
+		Vect4 v3 = m->transVerts[m->faces[i].v3 - 1];
 
-		v1.x *= 400;
-		v1.x += 500;
 
-		v1.y *= 500;
-		v1.y += 300;
-
-		v2.x *= 400;
-		v2.x += 500;
-
-		v2.y *= 500;
-		v2.y += 300;
-
-		v3.x *= 400;
-		v3.x += 500;
-
-		v3.y *= 500;
-		v3.y += 300;
-
-		g.drawLine((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y);
-		g.drawLine((int)v2.x, (int)v2.y, (int)v3.x, (int)v3.y);
-		g.drawLine((int)v3.x, (int)v3.y, (int)v1.x, (int)v1.y);
+		g.drawLine((int)v1.coord[0], (int)v1.coord[1], (int)v2.coord[0], (int)v2.coord[1]);
+		g.drawLine((int)v2.coord[0], (int)v2.coord[1], (int)v3.coord[0], (int)v3.coord[1]);
+		g.drawLine((int)v3.coord[0], (int)v3.coord[1], (int)v1.coord[0], (int)v1.coord[1]);
 	
 	}
 }

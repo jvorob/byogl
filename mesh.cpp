@@ -15,6 +15,7 @@ Mesh::~Mesh() {
 
 void Mesh::addVert(Vect4 v) {
 	verts.push_back(v);
+	transVerts.push_back(v);//not the best way to do it, but servicable
 }
 
 void Mesh::addFace(Face f) {
@@ -78,10 +79,9 @@ void Mesh::loadFromObjFile(char *filename) {
 			Vect4 v;
 
 			char *temp = next; //points to start of first float
-			v.x = strtod(temp, &temp);
-			v.y = strtod(temp, &temp);
-			v.z = strtod(temp, &temp);
-			v.h = 1;
+			for(int i = 0; i < 3; i++)
+				v.coord[i] = strtod(temp, &temp);
+			v.coord[3] = 1;
 
 			addVert(v);
 		} else if(!strcmp(buffer, "vt")) {
@@ -119,3 +119,8 @@ void Mesh::loadFromObjFile(char *filename) {
 }
 
 
+void Mesh::applyTransform(Mat4 m) { //Doesn't modify the verts, only transVerts
+	for(int i = 0; i < verts.size(); i++) {
+		transVerts[i] = m.mult(verts[i]);
+	}
+}
