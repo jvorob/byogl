@@ -1,6 +1,7 @@
 #include "matrix.h"
 
 #include <cstring>
+#include <cmath>
 
 Mat4 Mat4::ZeroMat() {
 	Mat4 temp;
@@ -43,8 +44,57 @@ Mat4 Mat4::TranslateMat(double x, double y, double z) {
 	return temp;
 }
 
+
+Mat4 Mat4::RotateXMat(double theta) {
+	Mat4 temp = IdentityMat();
+
+	theta *= (2 * 3.141592653) / 360;
+
+	temp.mat[index(1,1)] = cos(theta);
+	temp.mat[index(1,2)] = sin(theta);
+	temp.mat[index(2,1)] = -1 * sin(theta);
+	temp.mat[index(2,2)] = cos(theta);
+
+	return temp;
+}
+
+Mat4 Mat4::RotateYMat(double theta) {
+	Mat4 temp = IdentityMat();
+
+	theta *= (2 * 3.141592653) / 360;
+
+	temp.mat[index(0,0)] = cos(theta);
+	temp.mat[index(0,2)] = sin(theta);
+	temp.mat[index(2,0)] = -1 * sin(theta);
+	temp.mat[index(2,2)] = cos(theta);
+
+	return temp;
+}
+
+Mat4 Mat4::RotateZMat(double theta) {
+	Mat4 temp = IdentityMat();
+
+	theta *= (2 * 3.141592653) / 360;
+
+	temp.mat[index(0,0)] = cos(theta);
+	temp.mat[index(0,1)] = sin(theta);
+	temp.mat[index(1,0)] = -1 * sin(theta);
+	temp.mat[index(1,1)] = cos(theta);
+
+	return temp;
+}
+
+Mat4 Mat4::ProjectPersp() {//Needs to be normalized after this
+	Mat4 temp = IdentityMat();
+
+	temp.mat[index(3,3)] = 0;
+	temp.mat[index(3,2)] = 1;
+
+	return temp;
+}
+
 /*
-Mat4 Mat4::RotateMat(double x, double y, double z);
+projectortho
 */
 
 Mat4 Mat4::mult(Mat4 left, Mat4 right) {

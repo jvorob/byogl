@@ -15,10 +15,12 @@ class Mat4 {
 		static Mat4 IdentityMat();
 		static Mat4 ScaleMat(double x, double y, double z);
 		static Mat4 TranslateMat(double x, double y, double z);
-		static Mat4 RotateMat(double x, double y, double z);
+		static Mat4 RotateXMat(double theta);
+		static Mat4 RotateYMat(double theta);
+		static Mat4 RotateZMat(double theta);
 
-		static Mat4 ProjectOrtho();//Todo: params
-		static Mat4 ProjectPersp();//Todo: params
+		static Mat4 ProjectPersp();//Needs to be normalized after this
+		static Mat4 ProjectOrtho();//Not implemented
 
 		static Mat4 mult(Mat4 left, Mat4 right);//Multiply left by right, return product in new matrix
 

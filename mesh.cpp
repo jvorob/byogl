@@ -15,7 +15,6 @@ Mesh::~Mesh() {
 
 void Mesh::addVert(Vect4 v) {
 	verts.push_back(v);
-	transVerts.push_back(v);//not the best way to do it, but servicable
 }
 
 void Mesh::addFace(Face f) {
@@ -119,8 +118,3 @@ void Mesh::loadFromObjFile(char *filename) {
 }
 
 
-void Mesh::applyTransform(Mat4 m) { //Doesn't modify the verts, only transVerts
-	for(int i = 0; i < verts.size(); i++) {
-		transVerts[i] = m.mult(verts[i]);
-	}
-}

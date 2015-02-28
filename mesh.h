@@ -16,7 +16,6 @@ class Face {
 class Mesh {
 	public:
 		std::vector<Vect4> verts;
-		std::vector<Vect4> transVerts; //Temporary storage for transformed vertices
 		std::vector<Face> faces;
 		
 		Mesh();

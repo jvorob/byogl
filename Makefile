@@ -1,24 +1,27 @@
 all: display
 
-a.out: drawing.o main.o mesh.o camera.o matrix.o
+a.out: drawing.o main.o mesh.o camera.o matrix.o util.o
 	g++ $^ -o $@
 
 
 
-main.o: main.cpp drawing.h mesh.h
+main.o: main.cpp drawing.h mesh.h util.h
 	g++ main.cpp -c
 	
-drawing.o: drawing.cpp drawing.h
+drawing.o: drawing.cpp drawing.h util.h
 	g++ drawing.cpp -c
 
-mesh.o: mesh.cpp mesh.h matrix.h
+mesh.o: mesh.cpp mesh.h matrix.h util.h
 	g++ mesh.cpp -c
 
-camera.o: camera.cpp camera.h mesh.h drawing.h matrix.h
+camera.o: camera.cpp camera.h mesh.h drawing.h matrix.h util.h
 	g++ camera.cpp -c
 
-matrix.o: matrix.cpp matrix.h
+matrix.o: matrix.cpp matrix.h util.h
 	g++ matrix.cpp -c
+
+util.o: util.cpp util.h
+	g++ util.cpp -c
 
 
 

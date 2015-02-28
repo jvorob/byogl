@@ -4,9 +4,10 @@
 #include "mesh.h"
 #include "matrix.h"
 #include "drawing.h"
+#include "util.h"
 
 class Camera { 
-	double fov; //is orthographic, so is just viewwidth
+	double fov; //FOV in degrees
 
 	public:
 		Camera(double fov);

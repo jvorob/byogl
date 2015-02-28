@@ -44,6 +44,11 @@ class Graphics {
 		void setColor(char r, char g, char b);
 		inline void setPixel(char* pixel);
 		void drawLine(int x1, int y1, int x2, int y2);
+
+		int leftBound();
+		int rightBound();
+		int topBound();
+		int bottomBound();
 		
 	private:
 		void drawLineQ1(int x1, int y1, int dx, int dy);

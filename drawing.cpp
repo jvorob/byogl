@@ -90,6 +90,16 @@ using std::endl;
 			return;
 		}
 
+		if(x1 < leftBound()) {
+			if(x2 < leftBound())
+				return;
+			int leftIntercept = y1 + ((double)(leftBound() - x1) / (x2 - x1)) * (y2 - y1);
+			if(leftIntercept >= topBound() && leftIntercept <= bottomBound()) {
+				x1 = leftBound();
+				y1 = leftIntercept;
+			}
+		}
+
 		int dx = x2 - x1;
 		int dy = y2 - y1;
 		//dy always nonnegative
@@ -193,6 +203,11 @@ using std::endl;
 			setPixel(target->index(i, y1));
 		}
 	}
+
+	int Graphics::leftBound() {return 0;}
+	int Graphics::rightBound() {return target->width - 1;}
+	int Graphics::topBound() {return 0;}
+	int Graphics::bottomBound() {return target->height - 1;}
 
 //End Graphics Definitions
 //========================

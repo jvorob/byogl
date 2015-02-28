@@ -41,7 +41,7 @@ int main() {
 
 	m.loadFromObjFile("wt_teapot.obj");
 	
-	Camera c (4);
+	Camera c (90);
 	c.renderMesh(&m, &s);
 
 	s.write_to_file("out.ppm");
