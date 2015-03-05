@@ -5,7 +5,7 @@
 #include <fstream>
 
 #include "matrix.h"
-
+#include "entity.h"
 
 class Face {
 	public:
@@ -13,7 +13,7 @@ class Face {
 		//char r, g, b;
 };
 
-class Mesh {
+class Mesh: public Entity {
 	public:
 		std::vector<Vect4> verts;
 		std::vector<Face> faces;

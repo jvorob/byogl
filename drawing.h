@@ -17,6 +17,7 @@ enum e_hsv {
 class Surface {
 	public:
 		int width, height;
+		const int bpp = 24;
 		char *raster;
 
 		Surface(int width, int height);
@@ -51,6 +52,18 @@ class Graphics {
 		int bottomBound();
 		
 	private:
+		const int INSIDE = 0; // 0000
+		const int LEFT = 1;   // 0001
+		const int RIGHT = 2;  // 0010
+		const int BOTTOM = 4; // 0100
+		const int TOP = 8;    // 1000
+
+		int xmin, xmax, ymin, ymax;
+		int ComputeOutCode(int x, int y);
+		void CohenSutherlandLineClipAndDraw(int x0, int y0, int x1, int y1);
+ 
+
+		void drawLinePreProc(int x1, int y1, int x2, int y2);
 		void drawLineQ1(int x1, int y1, int dx, int dy);
 		void drawLineQ2(int x1, int y1, int dx, int dy);
 		void drawLineQ3(int x1, int y1, int dx, int dy);

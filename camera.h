@@ -5,8 +5,9 @@
 #include "matrix.h"
 #include "drawing.h"
 #include "util.h"
+#include "entity.h"
 
-class Camera { 
+class Camera: public Entity { 
 	double fov; //FOV in degrees
 
 	public:

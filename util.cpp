@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-void beep(int i) {
+void boop(int i) {
 	std::cerr << "Beep-" << i << "\n";
 }
 

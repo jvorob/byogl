@@ -7,7 +7,8 @@
 
 using std::endl;
 
-Mesh::Mesh() {
+Mesh::Mesh() 
+: Entity() {
 }
 
 Mesh::~Mesh() {
