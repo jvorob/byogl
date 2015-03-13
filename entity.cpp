@@ -30,9 +30,9 @@ Vect4 Entity::getScale() { return scale; }
 Mat4 Entity::forwardMat() {
 	Mat4 temp;
 
-	//First rotate things
-	//Then scale them up
-	temp = Mat4::mult(Mat4::ScaleMat(scale), rotation);
+	//First scale things
+	//Then rotate things
+	temp = Mat4::mult(rotation, Mat4::ScaleMat(scale));
 
 	//Then translate them
 	temp = Mat4::mult(Mat4::TranslateMat(loc), temp);

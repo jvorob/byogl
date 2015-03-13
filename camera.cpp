@@ -14,15 +14,7 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 	Mat4 temp = Mat4::IdentityMat();
 	double sf = 1;
 
-	//Prepare transform
-	//temp = Mat4::mult(Mat4::ScaleMat(4, 5, 4), temp);
-	//temp = Mat4::mult(Mat4::ScaleMat(sf, sf, sf), temp);
-	//temp = Mat4::mult(Mat4::RotateYMat(30), temp);
-	//temp = Mat4::mult(Mat4::RotateXMat(30), temp);
-	//temp = Mat4::mult(Mat4::TranslateMat(0, -2, -8), temp);
-	
 	temp = m->forwardMat();
-	//temp = Mat4::mult(temp, Mat4::RotateYMat(.1));
 	temp = Mat4::mult(Mat4::ProjectPersp(), temp);
 
 	//Transform points
@@ -37,7 +29,7 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 		transVerts[i].coord[1] /= transVerts[i].coord[3];
 
 		if(transVerts[i].coord[3] < 0.01 && transVerts[i].coord[3] > -0.01) {
-			std::cerr << i << " " << transVerts[i].coord[3] << " woop\n";
+			//std::cerr << i << " " << transVerts[i].coord[3] << " woop\n";
 		}
 	}
 
