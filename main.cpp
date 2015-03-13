@@ -33,11 +33,14 @@ double min(double a, double b) {
 }
 
 Uint32 timerCallback(AG_Timer *t, AG_Event *e);
+void runAgar();
+void runSDL();
 
 Mesh *mesh;
 Camera *camera;
 Surface *surface;
 UI_Agar *ui_agar;
+UI_SDL *ui_sdl;
 
 int main() {
 	int width = 800;
@@ -56,44 +59,22 @@ int main() {
 	s.clear(255);
 	Camera c (90);
 
-	//Prepare windows
-	UI_Agar uia(&s);
 
 	//Hold onto things
 	mesh = &m;
 	camera = &c;
 	surface = &s;
 
+	//Render once
+	s.clear(255);
+	c.renderMesh(&m, &s);
+
 	//Write to file
 	s.write_to_file("out.ppm");
 	cout << "Done" << endl;
 
-	/*
-	for(double i = 0; i < 300; i+= 5 ) {
-		//Make/draw screen
-		m.setRotation(d2r(i / 3.92), d2r(i), 0);
-		s.clear(255);
-		c.renderMesh(&m, &s);
-		uis.draw();
-		//cout << "sleeping... " << i << endl;
-		//usleep(20 * 1000);
-	}
-	*/
-		s.clear(255);
-		c.renderMesh(&m, &s);
-		//uis.draw();
 
-	ui_agar = &uia;
-
-	ui_agar->transform[1] = -1;
-	ui_agar->transform[2] = -3;
-
-	uia.addTimedEvent(timerCallback);
-	uia.mainloop();
-
-	//End things
-	//uis.cleanup();
-	uia.cleanup();
+	runSDL();
 
 	cout << " done" << endl;
 }
@@ -111,4 +92,38 @@ Uint32 timerCallback(AG_Timer *t, AG_Event *e) {
 	//g.drawLine(0,0,800,800);
 	ui_agar->draw();
 	return 50;
+}
+
+void runAgar() {
+	//Prepare windows
+	UI_Agar uia(surface);
+
+	ui_agar = &uia;
+
+	ui_agar->transform[1] = -1;
+	ui_agar->transform[2] = -3;
+
+	uia.addTimedEvent(timerCallback);
+	uia.mainloop();
+
+	//End things
+	//uis.cleanup();
+	uia.cleanup();
+}
+
+void runSDL() {
+	UI_SDL uis(surface);
+	ui_sdl = &uis;
+
+	for(double i = 0; i < 300; i+= 5 ) {
+		//Make/draw screen
+		mesh->setRotation(d2r(i / 3.92), d2r(i), 0);
+		surface->clear(255);
+		camera->renderMesh(mesh, surface);
+		ui_sdl->draw();
+		//cout << "sleeping... " << i << endl;
+		usleep(20 * 1000);
+	}
+
+	//uis.draw();
 }
