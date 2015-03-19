@@ -59,6 +59,7 @@ int main() {
 	cerr << m.to_string() << '\n';
 	w.addMesh(&m);
 	m.genPrimCircle(Vect4(0,0,0), 2);
+	m.genPrimCircle(Vect4(0,0,0), 0.1);
 
 	//Get the other mesh
 	Mesh *tempm = new Mesh();	
