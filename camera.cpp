@@ -48,9 +48,9 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 
 	//Draw faces with transformed vertices
 	for(int i = 0; i < m->faces.size(); i++) {
-		Vect4 v1 = transVerts[m->faces[i].v1 - 1];
-		Vect4 v2 = transVerts[m->faces[i].v2 - 1];
-		Vect4 v3 = transVerts[m->faces[i].v3 - 1];
+		Vect4 v1 = transVerts[m->faces[i].v1];
+		Vect4 v2 = transVerts[m->faces[i].v2];
+		Vect4 v3 = transVerts[m->faces[i].v3];
 
 		g.drawLine((int)v1.coord[0], (int)v1.coord[1], (int)v2.coord[0], (int)v2.coord[1]);
 		g.drawLine((int)v2.coord[0], (int)v2.coord[1], (int)v3.coord[0], (int)v3.coord[1]);
@@ -62,4 +62,12 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 	delete transVerts;
 }
 
+void Camera::renderMeshes(World *w, Surface *s) {
+	for(int i = 0; i < w->meshes.size(); i++) {
+		//Skip nulls
+		if(!w->meshes[i])
+			continue;
 
+		renderMesh(w->meshes[i], s);
+	}
+}

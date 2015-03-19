@@ -13,6 +13,7 @@
 #include "mesh.h"
 #include "camera.h"
 #include "ui.h"
+#include "world.h"
 #include "util.h"
 
 #define MAX_HSV 1536
@@ -36,6 +37,7 @@ Uint32 timerCallback(AG_Timer *t, AG_Event *e);
 void runAgar();
 void runSDL();
 
+World *world;
 Mesh *mesh;
 Camera *camera;
 Surface *surface;
@@ -46,13 +48,24 @@ int main() {
 	int width = 800;
 	int height = 800;
 
+	//Prepare world
+	World w;
 
 	//Prepare mesh
 	Mesh m;
-	m.loadFromObjFile("wt_teapot.obj");
-	m.setLocation(Vect4 (0, -1, -2));
+	//m.loadFromObjFile("wt_teapot.obj");
+	m.setLocation(Vect4 (0, -1, -4));
 	m.setScale(1);
 	cerr << m.to_string() << '\n';
+	w.addMesh(&m);
+	m.genPrimCircle(Vect4(0,0,0), 2);
+
+	//Get the other mesh
+	Mesh *tempm = new Mesh();	
+	tempm->loadFromObjFile("wt_teapot.obj");
+	tempm->setLocation(Vect4(-2,-1,-5));
+	tempm->setScale(1);
+	//w.addMesh(tempm);
 
 	//Prepare render
 	Surface s (width, height);
@@ -61,17 +74,18 @@ int main() {
 
 
 	//Hold onto things
+	world = &w;
 	mesh = &m;
 	camera = &c;
 	surface = &s;
 
 	//Render once
 	s.clear(255);
-	c.renderMesh(&m, &s);
+	c.renderMeshes(&w, &s);
 
 	//Write to file
 	s.write_to_file("out.ppm");
-	cout << "Done" << endl;
+	cout << "Done Writing" << endl;
 
 
 	runSDL();
@@ -115,15 +129,21 @@ void runSDL() {
 	UI_SDL uis(surface);
 	ui_sdl = &uis;
 
-	for(double i = 0; i < 300; i+= 5 ) {
-		//Make/draw screen
-		mesh->setRotation(d2r(i / 3.92), d2r(i), 0);
-		surface->clear(255);
-		camera->renderMesh(mesh, surface);
-		ui_sdl->draw();
-		//cout << "sleeping... " << i << endl;
+	double i = 0;
+	while(!ui_sdl->quit) {
+		if(!ui_sdl->isPaused()) {
+			//Prepare mesh
+			i+=5;
+			mesh->setRotation(d2r(i / 3.92), d2r(i), 0);
+
+			//Render Mesh
+			surface->clear(255);
+			camera->renderMeshes(world, surface);
+		}
+
+		//Handle UI
+		ui_sdl->mainloop();
+
 		usleep(20 * 1000);
 	}
-
-	//uis.draw();
 }

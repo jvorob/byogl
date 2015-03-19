@@ -6,6 +6,7 @@
 #include "drawing.h"
 #include "util.h"
 #include "entity.h"
+#include "world.h"
 
 class Camera: public Entity { 
 	double fov; //FOV in degrees
@@ -13,6 +14,7 @@ class Camera: public Entity {
 	public:
 		Camera(double fov);
 		void renderMesh(Mesh *m, Surface *s);
+		void renderMeshes(World *w, Surface *s);
 };
 
 #endif

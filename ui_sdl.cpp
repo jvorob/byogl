@@ -1,4 +1,5 @@
 #include "ui.h"
+#include <iostream>
 
 /*
 int SDL_PointInRect(SDL_Point *p, SDL_Rect *r) {
@@ -8,6 +9,7 @@ int SDL_PointInRect(SDL_Point *p, SDL_Rect *r) {
 
 UI_SDL::UI_SDL(Surface *s) {
 	//Init sdl, window, renderer
+	paused = 1;
 	setupWindow();
 
 	SDL_SetRenderDrawBlendMode(ren, SDL_BLENDMODE_BLEND);
@@ -84,3 +86,102 @@ void UI_SDL::draw() {
 	SDL_RenderPresent(ren);
 }
 
+
+void UI_SDL::mainloop() {
+		SDL_Event e;
+		
+		std::cerr << currtool << "\n";
+
+		//droppedframes = MAXDROPPEDFRAMES;
+
+		//doMouseEvent(&uistate, mysim);
+			
+		//drawGrid(ren, mysim, &gridviewport);
+		//drawIso(ren, mysim, &isoviewport);
+		//drawTools(ren, &uistate, &toolbox);
+		draw();
+		SDL_RenderPresent(ren);
+
+		
+		//fprintf(stderr, "b");
+		/*
+		if(SDL_GetTicks() - updatetime > 1000) {
+			updatetime = SDL_GetTicks();
+			if(DEBUGPRINT)
+				fprintf(stderr, "%d\n", tickspersecond);
+			tickspersecond = 0;
+		}
+		*/
+
+		//Get all events
+		while (SDL_PollEvent(&e) != 0 && !quit) {
+			switch (e.type) {
+				case SDL_QUIT:
+					quit = 1;
+					break;
+				case SDL_USEREVENT:
+					/*
+					if(!droppedframes || uistate.paused)
+						break; //If it drops too many frames, clear the event queue
+					droppedframes--;
+					//fprintf(stderr, "c");
+					tickspersecond++;
+					for(i = 0; i < STEPSPERTICK; i++) {
+						doDemos(uistate.demoselected, mysim);
+						sim_step(mysim, TICKTIME);
+					}
+					//printGrid(mysim);
+					tparams.timerlock = 0;
+					*/
+					break;
+				case SDL_MOUSEMOTION:
+				case SDL_MOUSEBUTTONDOWN:
+				case SDL_MOUSEBUTTONUP:
+					//doMouseEvent(&e, &selected, &hovered, mysim);
+					break;
+				case SDL_KEYUP:
+					switch(e.key.keysym.sym) {
+						case SDLK_RIGHTBRACKET:
+							changeTool(1);
+							break;
+						case SDLK_LEFTBRACKET:
+							changeTool(-1);
+							break;
+						case SDLK_p:
+							paused = !paused;
+							break;
+					}
+					break;
+				case SDL_WINDOWEVENT:
+					switch (e.window.event) {
+						case SDL_WINDOWEVENT_ENTER:
+							//uistate.mouseinwindow = 1;
+						case SDL_WINDOWEVENT_LEAVE:
+							//uistate.mouseinwindow = 0;
+							break;
+					}
+					break;
+				default:
+					//if(DEBUGPRINT) 
+						fprintf(stderr, "UNKNOWN EVENT TYPE\n");
+					break;
+			}
+		}
+
+	return;
+}
+
+int UI_SDL::isPaused() { return paused;}
+
+//Tools:
+
+
+void UI_SDL::changeTool(int delta) {
+	currtool += delta;
+
+	if(currtool < 0) {
+		currtool += END;
+	}
+	currtool %= END;
+	
+}

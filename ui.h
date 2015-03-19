@@ -15,11 +15,15 @@
 
 class UI_SDL{
 	public:
+		int quit = 0;
+
 		UI_SDL(Surface *s); //Inits, creates windows
 		void cleanup();
-
+		void mainloop();
 		void draw();
 		SDL_Surface *renBuffer; //3d is rendered to this
+
+		int isPaused();
 	private: 
 		SDL_Renderer *ren;
 
@@ -27,6 +31,21 @@ class UI_SDL{
 		SDL_Renderer *setupWindow();
 
 
+
+
+		enum Tool{ 
+			Circle, 
+			Line,
+			END,
+		};
+
+		void changeTool(int delta);
+
+		int paused = 0;
+
+		int currtool = 0;
+		int toolstate = 0;
+		SDL_Point clicks[4];
 };
 
 class UI_Agar{

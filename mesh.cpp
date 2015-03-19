@@ -4,8 +4,22 @@
 
 #include <cstring>
 #include <cstdlib>
+#include <cmath>
 
 using std::endl;
+
+std::string Face::to_string() {
+	std::string temp;
+
+	temp.append("");
+	temp.append(std::to_string(v1));
+	temp.append(", ");
+	temp.append(std::to_string(v2));
+	temp.append(", ");
+	temp.append(std::to_string(v3));
+
+	return temp;
+}
 
 Mesh::Mesh() 
 : Entity() {
@@ -14,8 +28,9 @@ Mesh::Mesh()
 Mesh::~Mesh() {
 }
 
-void Mesh::addVert(Vect4 v) {
+int Mesh::addVert(Vect4 v) {
 	verts.push_back(v);
+	return verts.size() - 1;
 }
 
 void Mesh::addFace(Face f) {
@@ -50,6 +65,9 @@ char *Mesh::myStrtok(char *s, char delim) {
 }
 
 void Mesh::loadFromObjFile(char *filename) {
+	addVert(Vect4(0,0,0));//dummy vert to account for 1-indexing
+
+
 	std::ifstream fs;
 	int numread = 0;
 	char buffer[1024];
@@ -118,4 +136,37 @@ void Mesh::loadFromObjFile(char *filename) {
 	fs.close();
 }
 
+void Mesh::genPrimEdge(Vect4 a, Vect4 b) {
+	int av = addVert(a);
+	int bv = addVert(b);
+	addFace(Face {av, bv, bv});
+}
 
+void Mesh::genPrimCircle(Vect4 c, double r) {
+	double t = 0;
+
+	const int edges = 50;
+
+	double lastx, lasty, currx, curry;
+
+	boop(c[0]);
+	boop(c[1]);
+	boop(c[2]);
+
+	lasty = sin(t) * r;
+	lastx = cos(t) * r;
+
+	for(int i = 1; i <= edges; i++) {
+		t = (TWOPI / edges) * i;
+
+		currx = cos(t) * r;
+		curry = sin(t) * r;
+
+		genPrimEdge(
+				Vect4(currx + c[0], curry + c[1], c[2]), 
+				Vect4(lastx + c[0], lasty + c[1], c[2]));
+
+		lastx = currx;
+		lasty = curry;
+	}
+}

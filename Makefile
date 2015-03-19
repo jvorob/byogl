@@ -6,7 +6,7 @@ INCLUDES = -I/usr/local/include `agar-config --cflags`
 CXX_FLAGS = -c $(INCLUDES) -std=c++11
 
 OBJECTS = main.o drawing.o mesh.o camera.o matrix.o util.o \
-	ui_agar.o ui_sdl.o entity.o
+	ui_agar.o ui_sdl.o entity.o world.o
 
 OUTFILE = a.out
 
@@ -33,7 +33,7 @@ drawing.o: drawing.cpp drawing.h util.h
 mesh.o: mesh.cpp mesh.h matrix.h util.h
 	g++ mesh.cpp $(CXX_FLAGS)
 
-camera.o: camera.cpp camera.h mesh.h drawing.h matrix.h util.h
+camera.o: camera.cpp camera.h mesh.h drawing.h matrix.h util.h world.h
 	g++ camera.cpp $(CXX_FLAGS)
 
 matrix.o: matrix.cpp matrix.h util.h
@@ -50,3 +50,6 @@ ui_agar.o: ui_agar.cpp ui.h drawing.h util.h
 
 entity.o: entity.cpp entity.h matrix.h util.h
 	g++ entity.cpp $(CXX_FLAGS)
+
+world.o: world.cpp world.h mesh.h camera.h util.h
+	g++ world.cpp $(CXX_FLAGS)
