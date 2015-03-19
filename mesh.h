@@ -43,6 +43,7 @@ class Mesh: public Entity {
 		//in xy plane
 		void genPrimEdge(Vect4 a, Vect4 b);
 		void genPrimCircle(Vect4 c, double r);
+		void genPrimBezier(Vect4 a, Vect4 b, Vect4 c, Vect4 d);
 	private:
 		char *myStrtok(char *s, char delim);
 };

@@ -1,4 +1,5 @@
 #include "matrix.h"
+#include "util.h"
 
 #include <cstring>
 #include <cmath>
@@ -189,4 +190,12 @@ std::string Vect4::to_string() {
 	temp.append(std::to_string(coord[3]));
 
 	return temp;
+}
+
+
+Vect4 Vect4::vLerp(Vect4 a, Vect4 b, double t) {
+	return Vect4(
+			lerp(a[0],b[0], t),
+			lerp(a[1],b[1], t),
+			lerp(a[2],b[2], t));
 }

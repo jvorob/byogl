@@ -16,6 +16,9 @@ class Vect4 {
 
 		Vect4 inverse();
 		std::string to_string();
+
+		//t0 = a, t1 = b, lerps between them
+		static Vect4 vLerp(Vect4 a, Vect4 b, double t);
 };
 
 class Mat4 {

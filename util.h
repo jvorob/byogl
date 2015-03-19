@@ -11,4 +11,7 @@ void boop(int i); //prints i to cerr
 void boopd(double d); //prints d to cerr
 double d2r(double d); //converts degrees to radians
 
+//t0=a, t1=b
+double lerp(double a, double b, double t);
+
 #endif

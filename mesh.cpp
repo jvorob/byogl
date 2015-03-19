@@ -25,6 +25,10 @@ Mesh::Mesh()
 : Entity() {
 }
 
+Mesh::Mesh(int deleteonremove) 
+: Entity(), deleteOnRemove(deleteonremove) {
+}
+
 Mesh::~Mesh() {
 }
 
@@ -168,5 +172,44 @@ void Mesh::genPrimCircle(Vect4 c, double r) {
 
 		lastx = currx;
 		lasty = curry;
+	}
+}
+
+void Mesh::genPrimBezier(Vect4 a, Vect4 b, Vect4 c, Vect4 d) {
+	double t = 0;
+
+	const int edges = 50;
+
+	double lastx, lasty, currx, curry;
+
+	genPrimEdge(a, b);
+	genPrimEdge(c, d);
+
+	Vect4 ab;
+	Vect4 bc;
+	Vect4 cd;
+
+	Vect4 ab_bc;
+	Vect4 bc_cd;
+
+	Vect4 end;
+
+	Vect4 last = a; //starts at a
+
+	for(int i = 1; i <= edges; i++) {
+		t = (1.0 / edges) * i;
+
+		ab = Vect4::vLerp(a, b, t);
+		bc = Vect4::vLerp(b, c, t);
+		cd = Vect4::vLerp(c, d, t);
+
+		ab_bc = Vect4::vLerp(ab, bc, t);
+		bc_cd = Vect4::vLerp(bc, cd, t);
+
+		end = Vect4::vLerp(ab_bc, bc_cd, t);
+
+		genPrimEdge(last, end);
+
+		last = end;
 	}
 }

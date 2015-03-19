@@ -13,3 +13,7 @@ void boopd(double d) {
 double d2r(double d) { 
 	return d / 180 * PI;
 }
+
+double lerp(double a, double b, double t) {
+	return (1 - t) * a + t * b;
+}
