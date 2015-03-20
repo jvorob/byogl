@@ -140,6 +140,7 @@ void UI_SDL::mainloop() {
 						case Circle:
 							dragMesh.clear();
 
+							//If a center has been picked, draw the temp circle
 							if(toolstate == 1) {
 								SDL_Point tempclick;
 								tempclick.x = e.motion.x;
@@ -158,6 +159,7 @@ void UI_SDL::mainloop() {
 					break;
 				case SDL_MOUSEBUTTONDOWN:
 					switch(currtool) {
+						//keep track of the starting click
 						case Circle:
 							clicks[0].x = e.button.x;
 							clicks[0].y = e.button.y;
@@ -170,6 +172,7 @@ void UI_SDL::mainloop() {
 				case SDL_MOUSEBUTTONUP:
 					switch(currtool) {
 						case Circle:
+							//Make it so
 							if(toolstate == 1) {
 								world->addMesh(new Mesh(dragMesh));
 							}
