@@ -193,8 +193,10 @@ void Mesh::genPrimBezier(Vect4 a, Vect4 b, Vect4 c, Vect4 d) {
 
 	double lastx, lasty, currx, curry;
 
+	/*
 	genPrimEdge(a, b);
 	genPrimEdge(c, d);
+	*/
 
 	Vect4 ab;
 	Vect4 bc;

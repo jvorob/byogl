@@ -38,24 +38,24 @@ class UI_SDL{
 
 		World *world;
 
+		int paused = 0;
+		int currtool = 0;
+		int toolstate = 0;
+		Vect4 clicks[4];
 
 		enum Tool{ 
 			Circle, 
 			Line,
+			Hermite,
+			Bezier,
 			END,
 		};
 
 		void changeTool(int delta);
-
-		int paused = 0;
-
-		int currtool = 0;
-		int toolstate = 0;
-	
-
-		SDL_Point clicks[4];
-
+		std::string toolString(int n);
 		Vect4 screenToWorld(const SDL_Point p);
+		bool doToolEvents(SDL_Event e); //return true if event handled
+
 };
 
 class UI_Agar{

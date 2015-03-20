@@ -96,7 +96,6 @@ void UI_SDL::draw() {
 void UI_SDL::mainloop() {
 		SDL_Event e;
 		
-		std::cerr << currtool << "\n";
 
 		//droppedframes = MAXDROPPEDFRAMES;
 
@@ -116,6 +115,9 @@ void UI_SDL::mainloop() {
 
 		//Get all events
 		while (SDL_PollEvent(&e) != 0 && !quit) {
+			if(doToolEvents(e))
+				continue;
+
 			switch (e.type) {
 				case SDL_QUIT:
 					quit = 1;
@@ -136,65 +138,21 @@ void UI_SDL::mainloop() {
 					*/
 					break;
 				case SDL_MOUSEMOTION:
-					switch(currtool) {
-						case Circle:
-							dragMesh.clear();
-
-							//If a center has been picked, draw the temp circle
-							if(toolstate == 1) {
-								SDL_Point tempclick;
-								tempclick.x = e.motion.x;
-								tempclick.y = e.motion.y;
-
-								Vect4 center = screenToWorld(clicks[0]);
-								Vect4 delta = screenToWorld(tempclick) - center;
-								double mag = delta.magnitude();
-
-								dragMesh.genPrimCircle(screenToWorld(clicks[0]), mag);
-							}
-							break;
-						default:
-							break;
-					}
 					break;
 				case SDL_MOUSEBUTTONDOWN:
-					switch(currtool) {
-						//keep track of the starting click
-						case Circle:
-							clicks[0].x = e.button.x;
-							clicks[0].y = e.button.y;
-							toolstate = 1;
-							break;
-						default:
-							break;
-					}
 					break;
 				case SDL_MOUSEBUTTONUP:
-					switch(currtool) {
-						case Circle:
-							//Make it so
-							if(toolstate == 1) {
-								world->addMesh(new Mesh(dragMesh));
-							}
-							dragMesh.clear();
-							toolstate = 0;
-							break;
-						default:
-							break;
-					}
 					break;
-				case SDL_KEYUP:
+				case SDL_KEYDOWN:
 					switch(e.key.keysym.sym) {
-						case SDLK_RIGHTBRACKET:
-							changeTool(1);
-							break;
-						case SDLK_LEFTBRACKET:
-							changeTool(-1);
-							break;
 						case SDLK_p:
 							paused = !paused;
 							break;
 					}
+					break;
+				case SDL_KEYUP:
+				case SDL_TEXTINPUT:
+				case SDL_TEXTEDITING:
 					break;
 				case SDL_WINDOWEVENT:
 					switch (e.window.event) {
@@ -230,8 +188,28 @@ void UI_SDL::changeTool(int delta) {
 	//Clear any partial progress
 	toolstate = 0;
 	dragMesh.clear();
+
+	std::cerr << "Current tool: " << toolString(currtool) << "\n";
 }
 
+std::string UI_SDL::toolString(int n) {
+	switch (n) {
+		case Circle:
+			return "Circle";
+			break;
+		case Line:
+			return "Line";
+			break;
+		case Hermite:
+			return "Hermite";
+			break;
+		case Bezier:
+			return "Bezier";
+			break;
+	}
+
+	return "Unkown";
+}
 
 Vect4 UI_SDL::screenToWorld(const SDL_Point p) {
 		Vect4 temp;
@@ -241,3 +219,205 @@ Vect4 UI_SDL::screenToWorld(const SDL_Point p) {
 
 		return temp;
 }
+
+bool UI_SDL::doToolEvents(SDL_Event e) {
+	switch (e.type) {
+		case SDL_MOUSEMOTION:
+			switch(currtool) {
+				case Circle:
+					dragMesh.clear();
+
+					//If a center has been picked, draw the temp circle
+					if(toolstate == 1) {
+						SDL_Point p;
+						p.x = e.motion.x;
+						p.y = e.motion.y;
+
+						Vect4 delta = screenToWorld(p) - clicks[0];
+						double mag = delta.magnitude();
+
+						dragMesh.genPrimCircle(clicks[0], mag);
+					}
+					break;
+				case Hermite:
+					dragMesh.clear();
+					
+					if(toolstate >= 1) {
+						Vect4 v[4];
+
+						SDL_Point p;
+						p.x = e.motion.x;
+						p.y = e.motion.y;
+
+						Vect4 curr = screenToWorld(p);
+
+						if(toolstate == 1) {
+							dragMesh.genPrimEdge(clicks[0], curr);
+						} else {
+							dragMesh.genPrimEdge(clicks[0], clicks[1]);
+							if(toolstate == 3) {
+								dragMesh.genPrimEdge(clicks[2], curr);
+								dragMesh.genPrimHermite(
+										clicks[0],
+										clicks[2],
+										clicks[1],
+										curr);
+							}
+						}
+					}
+					break;
+				case Bezier:
+					dragMesh.clear();
+					
+					if(toolstate >= 1) {
+						Vect4 v[4];
+
+						SDL_Point p;
+						p.x = e.motion.x;
+						p.y = e.motion.y;
+
+						Vect4 curr = screenToWorld(p);
+
+						if(toolstate == 1) {
+							dragMesh.genPrimEdge(clicks[0], curr);
+						} else {
+							dragMesh.genPrimEdge(clicks[0], clicks[1]);
+							if(toolstate == 3) {
+								dragMesh.genPrimEdge(clicks[2], curr);
+								dragMesh.genPrimBezier(
+										clicks[0],
+										clicks[1],
+										curr,
+										clicks[2]);
+							}
+						}
+					}
+					break;
+				default:
+					break;
+			}
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			switch(currtool) {
+				//keep track of the starting click
+				case Circle:
+					SDL_Point p;
+					p.x = e.button.x;
+					p.y = e.button.y;
+					clicks[0] = screenToWorld(p);
+					toolstate = 1;
+					break;
+				case Hermite:
+					if(toolstate == 0 || toolstate == 2) {
+						SDL_Point p;
+						p.x = e.button.x;
+						p.y = e.button.y;
+						clicks[toolstate] = screenToWorld(p);
+						toolstate++;
+					} else {
+						std::cerr << "ERR in mousedown Hermite\n";
+					}
+					break;
+				case Bezier:
+					if(toolstate == 0 || toolstate == 2) {
+						SDL_Point p;
+						p.x = e.button.x;
+						p.y = e.button.y;
+						clicks[toolstate] = screenToWorld(p);
+						toolstate++;
+					} else {
+						std::cerr << "ERR in mousedown Bezier\n";
+					}
+					break;
+				default:
+					break;
+			}
+			break;
+		case SDL_MOUSEBUTTONUP:
+			switch(currtool) {
+				case Circle:
+					//Make it so
+					if(toolstate == 1) {
+						world->addMesh(new Mesh(dragMesh));
+						dragMesh.clear();
+						toolstate = 0;
+					}
+					break;
+				case Hermite:
+					if(toolstate == 1 || toolstate == 3) {
+						SDL_Point p;
+						p.x = e.button.x;
+						p.y = e.button.y;
+						clicks[toolstate] = screenToWorld(p);
+						toolstate++;
+					} else {
+						std::cerr << "ERR in mouseup Hermite\n";
+					}
+
+					if(toolstate == 4) { //finished
+						dragMesh.clear();
+						dragMesh.genPrimHermite(
+								clicks[0],
+								clicks[2],
+								clicks[1],
+								clicks[3]);
+						world->addMesh(new Mesh(dragMesh));
+						dragMesh.clear();
+						toolstate = 0;
+					}
+					break;
+				case Bezier:
+					if(toolstate == 1 || toolstate == 3) {
+						SDL_Point p;
+						p.x = e.button.x;
+						p.y = e.button.y;
+						clicks[toolstate] = screenToWorld(p);
+						toolstate++;
+					} else {
+						std::cerr << "ERR in mouseup Bezier\n";
+					}
+
+					if(toolstate == 4) { //finished
+						dragMesh.clear();
+						dragMesh.genPrimBezier(
+								clicks[0],
+								clicks[1],
+								clicks[3],
+								clicks[2]);
+						world->addMesh(new Mesh(dragMesh));
+						dragMesh.clear();
+						toolstate = 0;
+					}
+					break;
+				default:
+					break;
+			}
+			break;
+		case SDL_KEYDOWN:
+			switch(e.key.keysym.sym) {
+				case SDLK_RIGHTBRACKET:
+					changeTool(1);
+					break;
+				case SDLK_LEFTBRACKET:
+					changeTool(-1);
+					break;
+				default:
+					return false;
+			}
+			break;
+		case SDL_WINDOWEVENT:
+			switch (e.window.event) {
+				case SDL_WINDOWEVENT_ENTER:
+					//uistate.mouseinwindow = 1;
+				case SDL_WINDOWEVENT_LEAVE:
+					//uistate.mouseinwindow = 0;
+					break;
+			}
+			return false;
+			break;
+		default:
+			return false;
+	}
+	return true;
+}
+
