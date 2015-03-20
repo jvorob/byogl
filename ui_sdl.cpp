@@ -28,6 +28,8 @@ UI_SDL::UI_SDL(Surface *s, World *w) {
 
 	dragMesh = Mesh(FALSE); //Dont delete on remove
 	//dragMesh.setRotation(0, PI - 1, 0);
+	std::cout << "Current tool: " << toolString(currtool) << "\n";
+	std::cout << "[ and ] to change tools\n";
 
 	surface = s;
 	world = w;
@@ -189,7 +191,7 @@ void UI_SDL::changeTool(int delta) {
 	toolstate = 0;
 	dragMesh.clear();
 
-	std::cerr << "Current tool: " << toolString(currtool) << "\n";
+	std::cout << "Current tool: " << toolString(currtool) << "\n";
 }
 
 std::string UI_SDL::toolString(int n) {
