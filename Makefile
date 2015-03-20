@@ -1,12 +1,12 @@
-LIBS = -L/usr/local/lib -lSDL2 -Wl,-rpath=/usr/local/lib `agar-config --libs`
-INCLUDES = -I/usr/local/include `agar-config --cflags`
+LIBS = -L/usr/local/lib -lSDL2 -Wl,-rpath=/usr/local/lib 
+INCLUDES = -I/usr/local/include 
 
 
 
 CXX_FLAGS = -c $(INCLUDES) -std=c++11
 
 OBJECTS = main.o drawing.o mesh.o camera.o matrix.o util.o \
-	ui_agar.o ui_sdl.o entity.o world.o
+	ui_sdl.o entity.o world.o
 
 OUTFILE = a.out
 
@@ -44,9 +44,6 @@ util.o: util.cpp util.h
 
 ui_sdl.o: ui_sdl.cpp ui.h drawing.h util.h
 	g++ ui_sdl.cpp $(CXX_FLAGS)
-
-ui_agar.o: ui_agar.cpp ui.h drawing.h util.h
-	g++ ui_agar.cpp $(CXX_FLAGS)
 
 entity.o: entity.cpp entity.h matrix.h util.h
 	g++ entity.cpp $(CXX_FLAGS)
