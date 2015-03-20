@@ -3,7 +3,7 @@
 #include "entity.h"
 
 Entity::Entity() {
-	scale = Vect4::Zero();
+	scale = Vect4(1,1,1);
 	loc = Vect4::Zero();
 	rotation = Mat4::IdentityMat();
 }

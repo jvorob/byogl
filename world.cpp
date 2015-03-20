@@ -14,6 +14,8 @@ World::~World() {
 			meshes[i] = NULL;
 		}
 	}
+
+	meshes.clear();
 }
 
 void World::buryDead() {

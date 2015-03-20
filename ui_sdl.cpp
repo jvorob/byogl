@@ -7,7 +7,7 @@ int SDL_PointInRect(SDL_Point *p, SDL_Rect *r) {
 }
 */
 
-UI_SDL::UI_SDL(Surface *s) {
+UI_SDL::UI_SDL(Surface *s, World *w) {
 	//Init sdl, window, renderer
 	paused = 1;
 	setupWindow();
@@ -25,6 +25,12 @@ UI_SDL::UI_SDL(Surface *s) {
 			0x0000FF,
 			0);
 	
+
+	dragMesh = Mesh(FALSE); //Dont delete on remove
+	//dragMesh.setRotation(0, PI - 1, 0);
+
+	surface = s;
+	world = w;
 }
 
 SDL_Renderer *UI_SDL::setupWindow() {
@@ -73,7 +79,7 @@ void UI_SDL::draw() {
 	srcrect.w = renBuffer->w;
 	srcrect.h = renBuffer->h;
 
-	dstrect.x = 100;
+	dstrect.x = 0;
 	dstrect.y = 0;
 	dstrect.w = renBuffer->w;
 	dstrect.h = renBuffer->h;
@@ -94,11 +100,6 @@ void UI_SDL::mainloop() {
 
 		//droppedframes = MAXDROPPEDFRAMES;
 
-		//doMouseEvent(&uistate, mysim);
-			
-		//drawGrid(ren, mysim, &gridviewport);
-		//drawIso(ren, mysim, &isoviewport);
-		//drawTools(ren, &uistate, &toolbox);
 		draw();
 		SDL_RenderPresent(ren);
 
@@ -135,9 +136,49 @@ void UI_SDL::mainloop() {
 					*/
 					break;
 				case SDL_MOUSEMOTION:
+					switch(currtool) {
+						case Circle:
+							dragMesh.clear();
+
+							if(toolstate == 1) {
+								SDL_Point tempclick;
+								tempclick.x = e.motion.x;
+								tempclick.y = e.motion.y;
+
+								Vect4 center = screenToWorld(clicks[0]);
+								Vect4 delta = screenToWorld(tempclick) - center;
+								double mag = delta.magnitude();
+
+								dragMesh.genPrimCircle(screenToWorld(clicks[0]), mag);
+							}
+							break;
+						default:
+							break;
+					}
+					break;
 				case SDL_MOUSEBUTTONDOWN:
+					switch(currtool) {
+						case Circle:
+							clicks[0].x = e.button.x;
+							clicks[0].y = e.button.y;
+							toolstate = 1;
+							break;
+						default:
+							break;
+					}
+					break;
 				case SDL_MOUSEBUTTONUP:
-					//doMouseEvent(&e, &selected, &hovered, mysim);
+					switch(currtool) {
+						case Circle:
+							if(toolstate == 1) {
+								world->addMesh(new Mesh(dragMesh));
+							}
+							dragMesh.clear();
+							toolstate = 0;
+							break;
+						default:
+							break;
+					}
 					break;
 				case SDL_KEYUP:
 					switch(e.key.keysym.sym) {
@@ -175,7 +216,6 @@ int UI_SDL::isPaused() { return paused;}
 
 //Tools:
 
-
 void UI_SDL::changeTool(int delta) {
 	currtool += delta;
 
@@ -183,5 +223,18 @@ void UI_SDL::changeTool(int delta) {
 		currtool += END;
 	}
 	currtool %= END;
-	
+
+	//Clear any partial progress
+	toolstate = 0;
+	dragMesh.clear();
+}
+
+
+Vect4 UI_SDL::screenToWorld(const SDL_Point p) {
+		Vect4 temp;
+		temp[0] = -1 * ((double)p.x - (surface->width / 2)) / (surface->width / 2);
+		temp[1] = -1 * ((double)p.y - (surface->height / 2)) / (surface->width / 2);
+		temp[2] = -1;
+
+		return temp;
 }

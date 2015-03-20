@@ -17,6 +17,7 @@ class Vect4 {
 		const Vect4 operator- (const Vect4 &rhs);
 		const Vect4 operator* (const double &rhs);
 		
+		double magnitude();
 
 		Vect4 inverse();
 		std::string to_string();

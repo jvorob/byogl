@@ -29,7 +29,21 @@ Mesh::Mesh(int deleteonremove)
 : Entity(), deleteOnRemove(deleteonremove) {
 }
 
+Mesh::Mesh(const Mesh& other) :
+	markedForDeath(other.markedForDeath),
+	deleteOnRemove(other.deleteOnRemove),
+	verts(std::vector<Vect4>(other.verts)),
+	faces(std::vector<Face>(other.faces)) {
+
+}
+
 Mesh::~Mesh() {
+	clear();
+}
+
+void Mesh::clear() {
+	verts.clear();
+	faces.clear();
 }
 
 int Mesh::addVert(Vect4 v) {
@@ -153,10 +167,6 @@ void Mesh::genPrimCircle(Vect4 c, double r) {
 
 	double lastx, lasty, currx, curry;
 
-	boop(c[0]);
-	boop(c[1]);
-	boop(c[2]);
-
 	lasty = sin(t) * r;
 	lastx = cos(t) * r;
 
@@ -253,5 +263,4 @@ void Mesh::genPrimHermite(Vect4 p0, Vect4 p1, Vect4 r0, Vect4 r1) {
 		last = curr;
 	}
 
-	boop(9999);
 }

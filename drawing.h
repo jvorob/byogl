@@ -31,6 +31,7 @@ class Surface {
 		int raster_size();
 
 		void write_to_file(const char *filename); //Writes rgb data to file
+	
 };
 
 class Graphics {

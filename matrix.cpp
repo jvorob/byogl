@@ -194,6 +194,12 @@ const Vect4 Vect4::operator* (const double &rhs) {
 			coord[2] * rhs);
 }
 
+double Vect4::magnitude() {
+	return sqrt(coord[0] * coord[0] +
+			coord[1] * coord[1] +
+			coord[2] * coord[2]);
+}
+
 Vect4 Vect4::inverse() {
 	return Vect4 (-1 * coord[0], -1 * coord[1], -1 * coord[2]);
 }

@@ -27,8 +27,11 @@ class Mesh: public Entity {
 		int deleteOnRemove = TRUE; 
 		
 		Mesh();
+		Mesh(const Mesh& other);
 		Mesh(int deleteonremove);
 		~Mesh();
+
+		void clear(); //makes it blank again (verts/faces)
 
 		//Returns the index of the new vertex
 		int addVert(Vect4 v);

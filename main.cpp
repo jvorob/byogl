@@ -89,7 +89,6 @@ int main() {
 		m.genPrimCircle(p0 + r0, 0.02);
 		m.genPrimCircle(p1 + r1, 0.02);
 		m.genPrimHermite(p0, p1, r0, r1);
-		boop(19999);
 	}
 
 	//Get the other mesh
@@ -159,8 +158,10 @@ void runAgar() {
 }
 
 void runSDL() {
-	UI_SDL uis(surface);
+	UI_SDL uis(surface, world);
 	ui_sdl = &uis;
+
+	world->addMesh(&ui_sdl->dragMesh);
 
 	double i = 0;
 	while(!ui_sdl->quit) {
@@ -168,11 +169,12 @@ void runSDL() {
 			//Prepare mesh
 			i+=5;
 			mesh->setRotation(d2r(i / 3.92), d2r(i), 0);
+		}
 
 			//Render Mesh
 			surface->clear(255);
+			camera->renderMesh(&(ui_sdl->dragMesh), surface);
 			camera->renderMeshes(world, surface);
-		}
 
 		//Handle UI
 		ui_sdl->mainloop();
