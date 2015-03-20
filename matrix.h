@@ -13,6 +13,10 @@ class Vect4 {
 		static Vect4 Zero();
 
 		double& operator[] (const int& i);
+		const Vect4 operator+ (const Vect4 &rhs);
+		const Vect4 operator- (const Vect4 &rhs);
+		const Vect4 operator* (const double &rhs);
+		
 
 		Vect4 inverse();
 		std::string to_string();

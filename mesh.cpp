@@ -175,6 +175,7 @@ void Mesh::genPrimCircle(Vect4 c, double r) {
 	}
 }
 
+//Start, start control, end control, end
 void Mesh::genPrimBezier(Vect4 a, Vect4 b, Vect4 c, Vect4 d) {
 	double t = 0;
 
@@ -212,4 +213,45 @@ void Mesh::genPrimBezier(Vect4 a, Vect4 b, Vect4 c, Vect4 d) {
 
 		last = end;
 	}
+}
+
+void Mesh::genPrimHermite(Vect4 p0, Vect4 p1, Vect4 r0, Vect4 r1) {
+	const int edges = 80;
+
+	double lastx, lasty, currx, curry;
+
+	/*
+	genPrimEdge(p0, p1);
+	genPrimEdge(p0, p0 + r0);
+	genPrimEdge(p1, p1 + r1);
+	*/
+
+	Vect4 curr;
+	Vect4 last = p0; //starts at p0
+
+	for(int i = 1; i <= edges; i++) {
+		double t = (1.0 / edges) * i;
+		double t2 = t * t;
+		double t3 = t2 * t;
+
+		double h0 = 2 * t3 - 3 * t2 + 1;
+		double h1 = -2 * t3 + 3 * t2;
+		double h2 = t3 - 2 * t2 + t;
+		double h3 = t3 - t2;
+
+		//Do this for each coordinate
+		for(int j = 0; j < 3; j++) {
+			curr[j] = 
+					h0 * p0[j] +
+					h1 * p1[j] +
+					h2 * r0[j] +
+					h3 * r1[j];
+		}
+
+		genPrimEdge(last, curr);
+
+		last = curr;
+	}
+
+	boop(9999);
 }

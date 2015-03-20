@@ -173,6 +173,27 @@ double& Vect4::operator[] (const int& i) {
 	return coord[i];
 }
 
+const Vect4 Vect4::operator+ (const Vect4 &rhs) {
+	return Vect4(
+			coord[0] + rhs.coord[0],
+			coord[1] + rhs.coord[1],
+			coord[2] + rhs.coord[2]);
+}
+
+const Vect4 Vect4::operator- (const Vect4 &rhs) {
+	return Vect4(
+			coord[0] - rhs.coord[0],
+			coord[1] - rhs.coord[1],
+			coord[2] - rhs.coord[2]);
+}
+
+const Vect4 Vect4::operator* (const double &rhs) {
+	return Vect4(
+			coord[0] * rhs,
+			coord[1] * rhs,
+			coord[2] * rhs);
+}
+
 Vect4 Vect4::inverse() {
 	return Vect4 (-1 * coord[0], -1 * coord[1], -1 * coord[2]);
 }

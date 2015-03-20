@@ -54,7 +54,7 @@ int main() {
 	//Prepare mesh
 	Mesh m(FALSE); //Not on heap
 	//m.loadFromObjFile("wt_teapot.obj");
-	m.setLocation(Vect4 (0, -1, -4));
+	m.setLocation(Vect4 (0, 0, -2));
 	m.setScale(1);
 	cerr << m.to_string() << '\n';
 	w.addMesh(&m);
@@ -64,6 +64,7 @@ int main() {
 	m.genPrimCircle(Vect4(0,0,0), 0.1);
 	m.genPrimCircle(Vect4(0,0,0), 0.01);
 	*/
+	/*
 	{
 		Vect4 a(-1,-1,0);
 		Vect4 b(0,-1,0);
@@ -76,6 +77,20 @@ int main() {
 		m.genPrimCircle(d, 0.1);
 		m.genPrimBezier(a, b, c, d);
 	}
+	*/
+	{
+		Vect4 p0(1,0,0);
+		Vect4 p1(-1,0,0);
+		Vect4 r0(0,-1,0);
+		Vect4 r1(0,1.5,0);
+
+		m.genPrimCircle(p0, 0.1);
+		m.genPrimCircle(p1, 0.1);
+		m.genPrimCircle(p0 + r0, 0.02);
+		m.genPrimCircle(p1 + r1, 0.02);
+		m.genPrimHermite(p0, p1, r0, r1);
+		boop(19999);
+	}
 
 	//Get the other mesh
 	Mesh *tempm;
@@ -83,7 +98,7 @@ int main() {
 	tempm->loadFromObjFile("wt_teapot.obj");
 	tempm->setLocation(Vect4(-2,-1,-5));
 	tempm->setScale(1);
-	w.addMesh(tempm);
+	//w.addMesh(tempm);
 
 	//Prepare render
 	Surface s (width, height);

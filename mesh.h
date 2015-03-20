@@ -39,11 +39,13 @@ class Mesh: public Entity {
 		void applyTransform(Mat4 m); //Doesn't modify the verts, only transVerts
 
 
+		void genPrimEdge(Vect4 a, Vect4 b);
 		//Adds edges for a circle
 		//in xy plane
-		void genPrimEdge(Vect4 a, Vect4 b);
 		void genPrimCircle(Vect4 c, double r);
+		//Start, start control, end control, end
 		void genPrimBezier(Vect4 a, Vect4 b, Vect4 c, Vect4 d);
+		void genPrimHermite(Vect4 p0, Vect4 p1, Vect4 r0, Vect4 r1);
 	private:
 		char *myStrtok(char *s, char delim);
 };
