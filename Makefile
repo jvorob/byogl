@@ -17,7 +17,7 @@ run: $(OUTFILE)
 	./$(OUTFILE)
 
 clean:
-	rm $(OBJECTS) $(OUTFILE)
+	rm $(OBJECTS) $(OUTFILE) out.ppm
 
 
 
