@@ -168,8 +168,8 @@ void UI_SDL::mainloop() {
 			}
 
 			if(focusedWidget == canvasArea) {
-				if(doToolEvents(e));
-				continue;
+				if(doToolEvents(e))
+					continue;
 			}
 
 			switch (e.type) {
@@ -275,17 +275,17 @@ Vect4 UI_SDL::screenToWorld(const SDL_Point p) {
 }
 
 bool UI_SDL::doToolEvents(SDL_Event e) {
+	SDL_Point p;
 	switch (e.type) {
 		case SDL_MOUSEMOTION:
+			p.x = e.motion.x;
+			p.y = e.motion.y;
 			switch(currtool) {
 				case Circle:
 					dragMesh.clear();
 
 					//If a center has been picked, draw the temp circle
 					if(toolstate == 1) {
-						SDL_Point p;
-						p.x = e.motion.x;
-						p.y = e.motion.y;
 
 						Vect4 delta = screenToWorld(p) - clicks[0];
 						double mag = delta.magnitude();
@@ -293,15 +293,21 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 						dragMesh.genPrimCircle(clicks[0], mag);
 					}
 					break;
+				case Line:
+					dragMesh.clear();
+
+					//If a center has been picked, draw the temp circle
+					if(toolstate == 1) {
+						Vect4 end = screenToWorld(p);
+
+						dragMesh.genPrimEdge(clicks[0], end);
+					}
+					break;
 				case Hermite:
 					dragMesh.clear();
 					
 					if(toolstate >= 1) {
 						Vect4 v[4];
-
-						SDL_Point p;
-						p.x = e.motion.x;
-						p.y = e.motion.y;
 
 						Vect4 curr = screenToWorld(p);
 
@@ -326,10 +332,6 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 					if(toolstate >= 1) {
 						Vect4 v[4];
 
-						SDL_Point p;
-						p.x = e.motion.x;
-						p.y = e.motion.y;
-
 						Vect4 curr = screenToWorld(p);
 
 						if(toolstate == 1) {
@@ -352,20 +354,20 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 			}
 			break;
 		case SDL_MOUSEBUTTONDOWN:
+			p.x = e.button.x;
+			p.y = e.button.y;
 			switch(currtool) {
 				//keep track of the starting click
 				case Circle:
-					SDL_Point p;
-					p.x = e.button.x;
-					p.y = e.button.y;
+					clicks[0] = screenToWorld(p);
+					toolstate = 1;
+					break;
+				case Line:
 					clicks[0] = screenToWorld(p);
 					toolstate = 1;
 					break;
 				case Hermite:
 					if(toolstate == 0 || toolstate == 2) {
-						SDL_Point p;
-						p.x = e.button.x;
-						p.y = e.button.y;
 						clicks[toolstate] = screenToWorld(p);
 						toolstate++;
 					} else {
@@ -374,9 +376,6 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 					break;
 				case Bezier:
 					if(toolstate == 0 || toolstate == 2) {
-						SDL_Point p;
-						p.x = e.button.x;
-						p.y = e.button.y;
 						clicks[toolstate] = screenToWorld(p);
 						toolstate++;
 					} else {
@@ -390,6 +389,14 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 		case SDL_MOUSEBUTTONUP:
 			switch(currtool) {
 				case Circle:
+					//Make it so
+					if(toolstate == 1) {
+						world->addMesh(new Mesh(dragMesh));
+						dragMesh.clear();
+						toolstate = 0;
+					}
+					break;
+				case Line:
 					//Make it so
 					if(toolstate == 1) {
 						world->addMesh(new Mesh(dragMesh));
