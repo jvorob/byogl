@@ -38,22 +38,23 @@ UI_SDL::UI_SDL(Surface *s, World *w) {
 
 	focusedWidget = NULL;
 	
-	currTool = new Label({804, 140}, "This is a label! Woop woop :)");
+	toolLabel = new Label({804, 80}, "This is a label! Woop woop :)");
+	widgets.push_back(toolLabel);
 
-	prevTool = new Button({804, 100}, "Prev Shape");
-	prevTool->setHandler(this);
-	nextTool = new Button({904, 100}, "Next Shape");
-	nextTool->setHandler(this);
+	setTool(0);
+
+	for(int i = 0; i < END; i++) {
+		toolButtons[i] = new Button({804, 100 + 30 * i}, toolString(i));
+		toolButtons[i]->setHandler(this);
+
+		widgets.push_back(toolButtons[i]);
+	}
 
 	canvasArea = new Widget();
 	canvasArea->bounds.x = 0;
 	canvasArea->bounds.y = 0;
 	canvasArea->bounds.w = s->width;
 	canvasArea->bounds.h = s->height;
-
-	widgets.push_back(currTool);
-	widgets.push_back(prevTool);
-	widgets.push_back(nextTool);
 	widgets.push_back(canvasArea);
 }
 
@@ -221,17 +222,21 @@ void UI_SDL::mainloop() {
 int UI_SDL::isPaused() { return paused;}
 
 void UI_SDL::handleButton(Button *b) {
-		if(b == nextTool) {
-			changeTool(1);
-		} else if(b == prevTool) {
-			changeTool(-1);
+	for(int i = 0; i < END; i++) {
+		if(b == toolButtons[i]) {
+			setTool(i);
 		}
+	}
 }
 
 //Tools:
 
 void UI_SDL::changeTool(int delta) {
-	currtool += delta;
+	setTool(currtool + delta);
+}
+
+void UI_SDL::setTool(int t) {
+	currtool = t;
 
 	if(currtool < 0) {
 		currtool += END;
@@ -243,7 +248,7 @@ void UI_SDL::changeTool(int delta) {
 	dragMesh.clear();
 
 	std::cout << "Current tool: " << toolString(currtool) << "\n";
-	currTool->setText(toolString(currtool));
+	toolLabel->setText(toolString(currtool));
 }
 
 std::string UI_SDL::toolString(int n) {

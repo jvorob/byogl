@@ -39,11 +39,18 @@ class UI_SDL : public ButtonHandler{
 		//Inits sdl, window, and renderer
 		void setupWindow();
 
+		enum Tool{ 
+			Circle, 
+			Line,
+			Hermite,
+			Bezier,
+			END,
+		};
 
 		//Widgets
 		std::vector<Widget *> widgets;
-		Label *currTool;
-		Button *nextTool, *prevTool;
+		Label *toolLabel;
+		Button *toolButtons[END];
 		Widget *canvasArea;
 		
 		Widget *focusedWidget;
@@ -56,15 +63,9 @@ class UI_SDL : public ButtonHandler{
 		int toolstate = 0;
 		Vect4 clicks[4];
 
-		enum Tool{ 
-			Circle, 
-			Line,
-			Hermite,
-			Bezier,
-			END,
-		};
 
 		void changeTool(int delta);
+		void setTool(int n);
 		std::string toolString(int n);
 		Vect4 screenToWorld(const SDL_Point p);
 		bool doToolEvents(SDL_Event e); //return true if event handled
