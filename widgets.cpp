@@ -142,3 +142,103 @@ void Button::draw(SDL_Renderer *r) {
 	Font::drawString(r, {bounds.x + padding, bounds.y + padding}, text);
 }
 
+//TextBox
+TextBox::TextBox(SDL_Point p, const std::string& s) {
+	text = std::string(s);
+
+	bounds.x = p.x;
+	bounds.y = p.y;
+	bounds.w = 300;//Font::renderedWidth(text) + 2 * padding;
+	bounds.h = minHeight;
+	
+	cursorpos = -1;
+}
+
+void TextBox::setText(const std::string &s) {
+	text = std::string(s);
+}
+
+std::string TextBox::getText() {
+	return std::string(text);
+}
+
+void TextBox::doEvent(SDL_Event e) {
+	switch (e.type) {
+		case SDL_MOUSEBUTTONDOWN:
+			cursorpos = (e.button.x - bounds.x - padding + (Font::charw / 2)) / Font::charw;
+			if(cursorpos > text.length())
+				cursorpos = text.length();
+			if(cursorpos < 0)
+				cursorpos = 0;
+			break;
+		case SDL_TEXTEDITING:
+			std::cerr << "Editing: " << e.edit.text << '\n';
+			break;
+		case SDL_TEXTINPUT:
+			std::cerr << "Input: " << e.text.text << '\n';
+			text.insert(cursorpos, e.text.text);
+			cursorpos++;
+			break;
+		case SDL_KEYDOWN:
+			switch(e.key.keysym.sym) {
+				case SDLK_DELETE:
+					//Don't do anything if at end
+					if(cursorpos == text.length())
+						break;
+						
+					//Otherwise move right and backspace
+					cursorpos++;
+					//NOTE: Not breaking
+				case SDLK_BACKSPACE:
+					if(cursorpos) {
+						if(cursorpos == -1)
+							std::cerr << "Something went horribly wrong with textbox events\n";
+
+						cursorpos--;
+						text.erase(cursorpos, 1);
+					}
+					boop(cursorpos);
+					break;
+				case SDLK_LEFT:
+					if(cursorpos)
+						cursorpos--;
+					break;
+				case SDLK_RIGHT:
+					if(cursorpos != text.length())
+						cursorpos++;
+					break;
+			}
+			break;
+	}
+}
+
+void TextBox::draw(SDL_Renderer *r) {
+	if(cursorpos != -1) {
+		SDL_SetRenderDrawColor(r, 200, 200, 200, 255);
+		SDL_RenderFillRect(r, &bounds);
+	}
+
+	SDL_SetRenderDrawColor(r, 0, 0, 0, 255);
+	Font::drawString(r, {bounds.x + padding, bounds.y + padding}, text);
+
+	SDL_RenderDrawRect(r, &bounds);
+
+	if(cursorpos != -1) {
+		SDL_SetRenderDrawColor(r, 0, 0, 0, 255);
+		SDL_RenderDrawLine(r, 
+				bounds.x + padding + cursorpos * Font::charw, 
+				bounds.y + padding + Font::charh, 
+				bounds.x + padding + (cursorpos + 1) * Font::charw, 
+				bounds.y + padding + Font::charh);
+	}
+}
+
+void TextBox::gainFocus() {
+	SDL_StartTextInput();
+	cursorpos = 0;
+}
+
+void TextBox::loseFocus() {
+	SDL_StopTextInput();
+	cursorpos = -1;
+}

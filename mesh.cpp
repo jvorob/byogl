@@ -1,6 +1,5 @@
 #include "mesh.h"
 
-#include <iostream>
 
 #include <cstring>
 #include <cstdlib>
@@ -82,7 +81,7 @@ char *Mesh::myStrtok(char *s, char delim) {
 	}
 }
 
-void Mesh::loadFromObjFile(char *filename) {
+void Mesh::loadFromObjFile(std::string filename) {
 	addVert(Vect4(0,0,0));//dummy vert to account for 1-indexing
 
 

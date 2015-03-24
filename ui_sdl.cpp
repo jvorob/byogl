@@ -50,6 +50,9 @@ UI_SDL::UI_SDL(Surface *s, World *w) {
 		widgets.push_back(toolButtons[i]);
 	}
 
+	testTextBox = new TextBox({804, 250}, "woop");	
+	widgets.push_back(testTextBox);
+
 	canvasArea = new Widget();
 	canvasArea->bounds.x = 0;
 	canvasArea->bounds.y = 0;
@@ -157,14 +160,20 @@ void UI_SDL::mainloop() {
 				int i;
 				for(i = 0; i < widgets.size(); i++) {
 					if(SDL_PointInRect(&p, &widgets[i]->bounds)) {
+						if(focusedWidget)
+							focusedWidget->loseFocus();
 						focusedWidget = widgets[i];
+						focusedWidget->gainFocus();
 						break;
 					}
 				}
 
 				//If clicked nowhere
-				if(i == widgets.size())
+				if(i == widgets.size()) {
+					if(focusedWidget)
+						focusedWidget->loseFocus();
 					focusedWidget = NULL;
+				}
 
 			}
 

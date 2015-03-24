@@ -50,7 +50,7 @@ int main() {
 	mesh->loadFromObjFile("wt_teapot.obj");
 	mesh->setLocation(Vect4 (0, 0, -2));
 	mesh->setScale(1);
-	//w.addMesh(mesh);
+	w.addMesh(mesh);
 
 	/*
 	m.genPrimCircle(Vect4(0,0,0), 2);

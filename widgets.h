@@ -29,6 +29,9 @@ class Widget {
 
 		virtual void doEvent(SDL_Event e) {};
 		virtual void draw(SDL_Renderer *r) {};
+
+		virtual void gainFocus() {};
+		virtual void loseFocus() {};
 };
 
 class Label : public Widget {
@@ -41,8 +44,8 @@ class Label : public Widget {
 		void draw(SDL_Renderer *r);
 
 	private:
-		const int minHeight = 12;
 		const int padding = 2;
+		const int minHeight = Font::charh + 2 * padding;
 
 		std::string text;
 };
@@ -71,6 +74,27 @@ class Button : public Widget {
 		std::string text;
 		ButtonHandler* bh;
 		
+};
+
+class TextBox : public Widget {
+	public:
+		TextBox(SDL_Point p, const std::string& s);
+
+		void setText(const std::string &s);
+		std::string getText();
+
+		void doEvent(SDL_Event e);
+		void draw(SDL_Renderer *r);
+		void gainFocus();
+		void loseFocus();
+
+	private:
+		const int padding = 4;
+		const int minHeight = Font::charh + 2 * padding;
+
+		int cursorpos;
+
+		std::string text;
 };
 
 #endif

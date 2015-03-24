@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <fstream>
+#include <iostream>
 
 #include "matrix.h"
 #include "entity.h"
@@ -37,7 +38,7 @@ class Mesh: public Entity {
 		int addVert(Vect4 v);
 		void addFace(Face f); 
 
-		void loadFromObjFile(char *filename);
+		void loadFromObjFile(std::string filename);
 
 		void applyTransform(Mat4 m); //Doesn't modify the verts, only transVerts
 
