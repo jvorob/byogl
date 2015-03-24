@@ -1,6 +1,8 @@
 #ifndef UI_H
 #define UI_H
 
+#include <vector>
+
 #include <SDL2/SDL.h>
 
 
@@ -9,11 +11,12 @@
 #include "matrix.h"
 #include "mesh.h"
 #include "world.h"
+#include "widgets.h"
 
 #define WINDOW_W 1400
 #define WINDOW_H 1080
 
-class UI_SDL{
+class UI_SDL : public ButtonHandler{
 	public:
 		int quit = 0;
 
@@ -28,15 +31,27 @@ class UI_SDL{
 
 		Mesh dragMesh;
 	private: 
+		//Big Picture stuff ======
+		int paused = 0;
+		World *world;
 		SDL_Renderer *ren;
 
 		//Inits sdl, window, and renderer
-		SDL_Renderer *setupWindow();
+		void setupWindow();
 
 
-		World *world;
+		//Widgets
+		std::vector<Widget *> widgets;
+		Label *currTool;
+		Button *nextTool, *prevTool;
+		Widget *canvasArea;
+		
+		Widget *focusedWidget;
 
-		int paused = 0;
+		void handleButton(Button *b);
+
+
+		//Drawing tools
 		int currtool = 0;
 		int toolstate = 0;
 		Vect4 clicks[4];

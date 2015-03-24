@@ -14,6 +14,9 @@ UI_SDL::UI_SDL(Surface *s, World *w) {
 
 	SDL_SetRenderDrawBlendMode(ren, SDL_BLENDMODE_BLEND);
 
+	//Setup fonts
+	Font::init(ren);
+
 	renBuffer = SDL_CreateRGBSurfaceFrom(
 			s->raster,
 			s->width,
@@ -24,7 +27,6 @@ UI_SDL::UI_SDL(Surface *s, World *w) {
 			0x00FF00,
 			0x0000FF,
 			0);
-	
 
 	dragMesh = Mesh(FALSE); //Dont delete on remove
 	//dragMesh.setRotation(0, PI - 1, 0);
@@ -33,9 +35,29 @@ UI_SDL::UI_SDL(Surface *s, World *w) {
 
 	surface = s;
 	world = w;
+
+	focusedWidget = NULL;
+	
+	currTool = new Label({804, 140}, "This is a label! Woop woop :)");
+
+	prevTool = new Button({804, 100}, "Prev Shape");
+	prevTool->setHandler(this);
+	nextTool = new Button({904, 100}, "Next Shape");
+	nextTool->setHandler(this);
+
+	canvasArea = new Widget();
+	canvasArea->bounds.x = 0;
+	canvasArea->bounds.y = 0;
+	canvasArea->bounds.w = s->width;
+	canvasArea->bounds.h = s->height;
+
+	widgets.push_back(currTool);
+	widgets.push_back(prevTool);
+	widgets.push_back(nextTool);
+	widgets.push_back(canvasArea);
 }
 
-SDL_Renderer *UI_SDL::setupWindow() {
+void UI_SDL::setupWindow() {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0){
 		printf("SDL_Init Error: %s",SDL_GetError());
 		exit(-1);
@@ -70,6 +92,7 @@ void UI_SDL::cleanup() {
 
 void UI_SDL::draw() {
 	//Clear
+	SDL_SetRenderDrawColor(ren, 210, 200, 160, 255);
 	SDL_RenderClear(ren);
 
 	//Draw Buffer
@@ -89,6 +112,12 @@ void UI_SDL::draw() {
 	SDL_RenderCopy(ren, tempTexture, &srcrect, &dstrect);
 
 	SDL_DestroyTexture(tempTexture);
+
+	//Draw widgets
+	for(int i = 0; i < widgets.size(); i++) {
+		if(widgets[i])
+			widgets[i]->draw(ren);
+	}
 
 	//Flush Buffer
 	SDL_RenderPresent(ren);
@@ -117,8 +146,31 @@ void UI_SDL::mainloop() {
 
 		//Get all events
 		while (SDL_PollEvent(&e) != 0 && !quit) {
-			if(doToolEvents(e))
+
+			//Set focus
+			if(e.type == SDL_MOUSEBUTTONDOWN) {
+				SDL_Point p;
+				p.x = e.button.x;
+				p.y = e.button.y;
+
+				int i;
+				for(i = 0; i < widgets.size(); i++) {
+					if(SDL_PointInRect(&p, &widgets[i]->bounds)) {
+						focusedWidget = widgets[i];
+						break;
+					}
+				}
+
+				//If clicked nowhere
+				if(i == widgets.size())
+					focusedWidget = NULL;
+
+			}
+
+			if(focusedWidget == canvasArea) {
+				if(doToolEvents(e));
 				continue;
+			}
 
 			switch (e.type) {
 				case SDL_QUIT:
@@ -139,30 +191,21 @@ void UI_SDL::mainloop() {
 					tparams.timerlock = 0;
 					*/
 					break;
-				case SDL_MOUSEMOTION:
-					break;
-				case SDL_MOUSEBUTTONDOWN:
-					break;
-				case SDL_MOUSEBUTTONUP:
-					break;
 				case SDL_KEYDOWN:
 					switch(e.key.keysym.sym) {
 						case SDLK_p:
 							paused = !paused;
 							break;
 					}
-					break;
+				case SDL_MOUSEMOTION:
+				case SDL_MOUSEBUTTONDOWN:
+				case SDL_MOUSEBUTTONUP:
 				case SDL_KEYUP:
 				case SDL_TEXTINPUT:
 				case SDL_TEXTEDITING:
-					break;
 				case SDL_WINDOWEVENT:
-					switch (e.window.event) {
-						case SDL_WINDOWEVENT_ENTER:
-							//uistate.mouseinwindow = 1;
-						case SDL_WINDOWEVENT_LEAVE:
-							//uistate.mouseinwindow = 0;
-							break;
+					if(focusedWidget) {
+						focusedWidget->doEvent(e);
 					}
 					break;
 				default:
@@ -176,6 +219,14 @@ void UI_SDL::mainloop() {
 }
 
 int UI_SDL::isPaused() { return paused;}
+
+void UI_SDL::handleButton(Button *b) {
+		if(b == nextTool) {
+			changeTool(1);
+		} else if(b == prevTool) {
+			changeTool(-1);
+		}
+}
 
 //Tools:
 
@@ -192,6 +243,7 @@ void UI_SDL::changeTool(int delta) {
 	dragMesh.clear();
 
 	std::cout << "Current tool: " << toolString(currtool) << "\n";
+	currTool->setText(toolString(currtool));
 }
 
 std::string UI_SDL::toolString(int n) {

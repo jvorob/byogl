@@ -116,6 +116,8 @@ void runSDL() {
 
 	world->addMesh(&ui_sdl->dragMesh);
 
+	cout << "Initialized\n";
+
 	double i = 0;
 	while(!ui_sdl->quit) {
 		if(!ui_sdl->isPaused()) {

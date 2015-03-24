@@ -17,3 +17,11 @@ double d2r(double d) {
 double lerp(double a, double b, double t) {
 	return (1 - t) * a + t * b;
 }
+
+void printSDLError() {
+	std::fprintf(stderr, "SDL Errror:%s\n", SDL_GetError());
+}
+
+bool SDL_PointInRect(SDL_Point *p, SDL_Rect *r) {
+	return (bool)(p->x >= r->x && p->y >= r->y && p->x <= r->x + r->w && p->y <= r->y + r->h);
+}

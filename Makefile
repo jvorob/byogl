@@ -6,7 +6,7 @@ INCLUDES = -I/usr/local/include
 CXX_FLAGS = -c $(INCLUDES) -std=c++11
 
 OBJECTS = main.o drawing.o mesh.o camera.o matrix.o util.o \
-	ui_sdl.o entity.o world.o
+	ui_sdl.o entity.o world.o widgets.o
 
 OUTFILE = a.out
 
@@ -42,7 +42,7 @@ matrix.o: matrix.cpp matrix.h util.h
 util.o: util.cpp util.h
 	g++ util.cpp $(CXX_FLAGS)
 
-ui_sdl.o: ui_sdl.cpp ui.h drawing.h util.h
+ui_sdl.o: ui_sdl.cpp ui.h drawing.h util.h widgets.h
 	g++ ui_sdl.cpp $(CXX_FLAGS)
 
 entity.o: entity.cpp entity.h matrix.h util.h
@@ -50,3 +50,6 @@ entity.o: entity.cpp entity.h matrix.h util.h
 
 world.o: world.cpp world.h mesh.h camera.h util.h
 	g++ world.cpp $(CXX_FLAGS)
+
+widgets.o: widgets.cpp widgets.h
+	g++ widgets.cpp $(CXX_FLAGS)
