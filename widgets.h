@@ -43,7 +43,7 @@ class Label : public Widget {
 
 		void draw(SDL_Renderer *r);
 
-	private:
+	protected:
 		const int padding = 2;
 		const int minHeight = Font::charh + 2 * padding;
 
@@ -64,7 +64,7 @@ class Button : public Widget {
 
 		void doEvent(SDL_Event e);
 		void draw(SDL_Renderer *r);
-	private:
+	protected:
 		const int padding = 8;
 		const int minHeight = Font::charh + 2 * padding;
 
@@ -88,13 +88,30 @@ class TextBox : public Widget {
 		void gainFocus();
 		void loseFocus();
 
-	private:
+	protected:
 		const int padding = 4;
 		const int minHeight = Font::charh + 2 * padding;
 
 		int cursorpos;
 
 		std::string text;
+};
+
+class NumBox : public TextBox {
+	public:
+		NumBox(SDL_Point p, double d);
+
+		double getNum();
+		void setNum(double d);
+
+		void gainFocus();
+		void loseFocus();
+
+		void doEvent(SDL_Event e);
+	protected:
+		double num;
+		//Either sets number from inputed text or resets to last valid value
+		void validate();
 };
 
 #endif

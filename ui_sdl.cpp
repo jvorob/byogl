@@ -53,6 +53,9 @@ UI_SDL::UI_SDL(Surface *s, World *w) {
 	testTextBox = new TextBox({804, 250}, "woop");	
 	widgets.push_back(testTextBox);
 
+	testNumBox = new NumBox({804, 280}, 3.14159);	
+	widgets.push_back(testNumBox);
+
 	canvasArea = new Widget();
 	canvasArea->bounds.x = 0;
 	canvasArea->bounds.y = 0;

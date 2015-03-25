@@ -1,5 +1,7 @@
 #include "widgets.h"
 
+#include <string>
+#include <stdexcept>
 
 //Font
 SDL_Texture* Font::font = NULL;
@@ -241,4 +243,54 @@ void TextBox::gainFocus() {
 void TextBox::loseFocus() {
 	SDL_StopTextInput();
 	cursorpos = -1;
+}
+
+//Numbox
+
+NumBox::NumBox(SDL_Point p, double d) :
+	TextBox(p, "") {
+
+	bounds.w = 300;
+	
+	setNum(d);
+}
+
+double NumBox::getNum() {
+	return num;
+}
+
+void NumBox::setNum(double d) {
+	num = d;
+	text = std::to_string(d);
+}
+
+void NumBox::gainFocus() {
+	SDL_StartTextInput();
+	cursorpos = 0;
+}
+
+void NumBox::loseFocus() {
+	SDL_StopTextInput();
+	cursorpos = -1;
+
+	validate();
+}
+
+void NumBox::doEvent(SDL_Event e) {
+	TextBox::doEvent(e);
+
+	if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN)
+		validate();
+}
+
+void NumBox::validate() {
+	double temp;
+	try {
+		temp = std::stod(text);
+	} catch (const std::invalid_argument &ia) {
+		setNum(num);
+		return;
+	}
+
+	setNum(temp);
 }

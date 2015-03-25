@@ -53,6 +53,7 @@ class UI_SDL : public ButtonHandler{
 		Button *toolButtons[END];
 		Widget *canvasArea;
 		TextBox *testTextBox;
+		NumBox *testNumBox;
 		
 		Widget *focusedWidget;
 
