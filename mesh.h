@@ -13,6 +13,8 @@ class Face {
 	public:
 		int v1, v2, v3; //Vertices
 		//char r, g, b;
+		Face();
+		Face(int a, int b, int c);
 
 		std::string to_string();
 };
@@ -50,6 +52,10 @@ class Mesh: public Entity {
 		//Start, start control, end control, end
 		void genPrimBezier(Vect4 a, Vect4 b, Vect4 c, Vect4 d);
 		void genPrimHermite(Vect4 p0, Vect4 p1, Vect4 r0, Vect4 r1);
+
+		void genPrimBox();
+		void genPrimSphere(double r);
+		void genPrimTorus(double R, double r);
 	private:
 		char *myStrtok(char *s, char delim);
 };

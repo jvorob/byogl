@@ -47,9 +47,12 @@ int main() {
 
 	//Prepare mesh
 	mesh = new Mesh(); //Not on heap
+	/*
 	mesh->loadFromObjFile("wt_teapot.obj");
 	mesh->setLocation(Vect4 (0, 0, -2));
 	mesh->setScale(1);
+	*/
+	mesh->genPrimSphere(2);
 	w.addMesh(mesh);
 
 	/*
@@ -123,10 +126,10 @@ void runSDL() {
 		if(!ui_sdl->isPaused()) {
 			//Prepare mesh
 			i+=5;
-			//mesh->setRotation(d2r(i / 3.92), d2r(i), 0);
+			mesh->setRotation(d2r(i / 3.92), d2r(i), 0);
 		}
 
-		mesh->setRotation(ui_sdl->rotation[0], ui_sdl->rotation[1], ui_sdl->rotation[2]);
+		//mesh->setRotation(ui_sdl->rotation[0], ui_sdl->rotation[1], ui_sdl->rotation[2]);
 		mesh->setLocation(ui_sdl->translation);
 		mesh->setScale(ui_sdl->scale);
 

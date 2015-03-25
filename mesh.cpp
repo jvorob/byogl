@@ -7,6 +7,14 @@
 
 using std::endl;
 
+Face::Face() {}
+
+Face::Face(int a, int b, int c) {
+	v1 = a;
+	v2 = b;
+	v3 = c;
+}
+
 std::string Face::to_string() {
 	std::string temp;
 
@@ -264,4 +272,71 @@ void Mesh::genPrimHermite(Vect4 p0, Vect4 p1, Vect4 r0, Vect4 r1) {
 		last = curr;
 	}
 
+}
+
+void Mesh::genPrimBox() {
+	std::cerr << "genprimbox not implemented\n";
+}
+
+void Mesh::genPrimSphere(double r) {
+	const int slices = 20;
+	const int pps = 10;//points per slice
+
+	double lastx, lasty, currx, curry;
+
+	int top = addVert(Vect4(0, r, 0));
+	int bot = addVert(Vect4(0, -r, 0));
+
+	//Contains all the vert indices except the top and bottom
+	int points[slices][pps - 1];
+
+	for(int i = 0; i < slices; i++) {
+		double phi = (TWOPI / slices) * i;
+
+		for(int j = 1; j < pps; j++) {
+			double theta = (PI / pps) * j;
+
+			//theta 0 -> top, theta pi -> bottom
+			//phi 0 -> +x, goes counterclockwise from top
+
+			double vert = r * cos(theta);
+			double horiz = r * sin(theta);
+
+			Vect4 temp;
+			temp[0] = horiz * sin(phi);
+			temp[1] = vert;
+			temp[2] = horiz * cos(phi);
+
+			points[i][j - 1] = addVert(temp);
+		}
+	}
+
+	//make caps
+	for(int i = 0; i < slices; i++) {
+		addFace(Face(
+				top, 
+				points[i][0], 
+				points[(i + 1) % slices][0]));
+		addFace(Face(
+				bot, 
+				points[i][pps - 2], 
+				points[(i + 1) % slices][pps - 2]));
+	}
+
+	//make body
+	for(int i = 0; i < slices; i++) {
+		for(int j = 1; j < pps - 1; j++) {
+			//bottomleft
+			addFace(Face(
+					points[i][j - 1], 
+					points[i][j], 
+					points[(i + 1) % slices][j]));
+
+			//topright
+			addFace(Face(
+					points[(i + 1) % slices][j - 1], 
+					points[i][j - 1], 
+					points[(i + 1) % slices][j]));
+		}
+	}
 }

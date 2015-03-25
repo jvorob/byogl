@@ -23,7 +23,6 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 	}
 
 	//Normalize w (only for x and y)
-
 	for(int i = 0; i < m->verts.size(); i++) {
 		transVerts[i].coord[0] /= transVerts[i].coord[3];
 		transVerts[i].coord[1] /= transVerts[i].coord[3];
