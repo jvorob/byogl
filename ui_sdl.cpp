@@ -17,6 +17,7 @@ UI_SDL::UI_SDL(Surface *s, World *w) {
 	//Setup fonts
 	Font::init(ren);
 
+	//Prepare rendering surface
 	renBuffer = SDL_CreateRGBSurfaceFrom(
 			s->raster,
 			s->width,
@@ -28,6 +29,7 @@ UI_SDL::UI_SDL(Surface *s, World *w) {
 			0x0000FF,
 			0);
 
+	//Setup tools for curve drawing
 	dragMesh = Mesh(FALSE); //Dont delete on remove
 	//dragMesh.setRotation(0, PI - 1, 0);
 	std::cout << "Current tool: " << toolString(currtool) << "\n";
@@ -36,6 +38,8 @@ UI_SDL::UI_SDL(Surface *s, World *w) {
 	surface = s;
 	world = w;
 
+
+	//Prepare Widgets
 	focusedWidget = NULL;
 	
 	toolLabel = new Label({804, 80}, "This is a label! Woop woop :)");
@@ -50,11 +54,36 @@ UI_SDL::UI_SDL(Surface *s, World *w) {
 		widgets.push_back(toolButtons[i]);
 	}
 
+	/*
 	testTextBox = new TextBox({804, 250}, "woop");	
 	widgets.push_back(testTextBox);
 
-	testNumBox = new NumBox({804, 280}, 3.14159);	
+	testNumBox = new NumBox({804, 270}, 3.14159);	
 	widgets.push_back(testNumBox);
+	*/
+
+	std::string coords[] = {"X", "Y", "Z"};
+	widgets.push_back(new Label({804, 274},  "Rotate"));
+	widgets.push_back(new Label({954, 274},  "Translate"));
+	widgets.push_back(new Label({1104, 274}, "Scale"));
+	for(int i = 0; i < 3; i++) {
+		//Create labels for these
+		widgets.push_back(new Label({804, 294 + 20 * i}, coords[i]));
+		widgets.push_back(new Label({954, 294 + 20 * i}, coords[i]));
+		widgets.push_back(new Label({1104, 294 + 20 * i}, coords[i]));
+
+		rotNumBoxes[i] = new NumBox({824, 290 + 20 * i}, 0);
+		widgets.push_back(rotNumBoxes[i]);
+
+		transNumBoxes[i] = new NumBox({974, 290 + 20 * i}, 0);
+		widgets.push_back(transNumBoxes[i]);
+
+		scaleNumBoxes[i] = new NumBox({1124, 290 + 20 * i}, 1);
+		widgets.push_back(scaleNumBoxes[i]);
+
+	}
+
+	
 
 	canvasArea = new Widget();
 	canvasArea->bounds.x = 0;
@@ -227,6 +256,12 @@ void UI_SDL::mainloop() {
 					break;
 			}
 		}
+
+	for(int i = 0; i < 3; i++) {
+		rotation[i] =		rotNumBoxes[i]->getNum();
+		translation[i] =	transNumBoxes[i]->getNum();
+		scale[i] =			scaleNumBoxes[i]->getNum();
+	}
 
 	return;
 }

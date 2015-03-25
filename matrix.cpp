@@ -133,7 +133,7 @@ std::string Mat4::to_string() {
 	return temp;
 }
 
-Vect4::Vect4() {}
+Vect4::Vect4() {coord[3] = 1;}
 Vect4::Vect4(double x, double y, double z) {
 	coord[0] = x;
 	coord[1] = y;

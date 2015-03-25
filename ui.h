@@ -30,6 +30,10 @@ class UI_SDL : public ButtonHandler{
 		int isPaused();
 
 		Mesh dragMesh;
+
+		Vect4 rotation;
+		Vect4 translation;
+		Vect4 scale;
 	private: 
 		//Big Picture stuff ======
 		int paused = 0;
@@ -52,8 +56,13 @@ class UI_SDL : public ButtonHandler{
 		Label *toolLabel;
 		Button *toolButtons[END];
 		Widget *canvasArea;
-		TextBox *testTextBox;
-		NumBox *testNumBox;
+		//TextBox *testTextBox;
+		//NumBox *testNumBox;
+
+		NumBox *rotNumBoxes[3];
+		NumBox *scaleNumBoxes[3];
+		NumBox *transNumBoxes[3];
+		
 		
 		Widget *focusedWidget;
 

@@ -250,7 +250,7 @@ void TextBox::loseFocus() {
 NumBox::NumBox(SDL_Point p, double d) :
 	TextBox(p, "") {
 
-	bounds.w = 300;
+	bounds.w = 100;
 	
 	setNum(d);
 }

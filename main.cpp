@@ -123,13 +123,17 @@ void runSDL() {
 		if(!ui_sdl->isPaused()) {
 			//Prepare mesh
 			i+=5;
-			mesh->setRotation(d2r(i / 3.92), d2r(i), 0);
+			//mesh->setRotation(d2r(i / 3.92), d2r(i), 0);
 		}
 
-			//Render Mesh
-			surface->clear(255);
-			camera->renderMesh(&(ui_sdl->dragMesh), surface);
-			camera->renderMeshes(world, surface);
+		mesh->setRotation(ui_sdl->rotation[0], ui_sdl->rotation[1], ui_sdl->rotation[2]);
+		mesh->setLocation(ui_sdl->translation);
+		mesh->setScale(ui_sdl->scale);
+
+		//Render Mesh
+		surface->clear(255);
+		camera->renderMesh(&(ui_sdl->dragMesh), surface);
+		camera->renderMeshes(world, surface);
 
 		//Handle UI
 		ui_sdl->mainloop();
