@@ -294,7 +294,7 @@ void UI_SDL::setTool(int t) {
 	toolstate = 0;
 	dragMesh.clear();
 
-	std::cout << "Current tool: " << toolString(currtool) << "\n";
+	//std::cout << "Current tool: " << toolString(currtool) << "\n";
 	toolLabel->setText(toolString(currtool));
 }
 

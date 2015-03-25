@@ -177,7 +177,7 @@ void TextBox::doEvent(SDL_Event e) {
 			std::cerr << "Editing: " << e.edit.text << '\n';
 			break;
 		case SDL_TEXTINPUT:
-			std::cerr << "Input: " << e.text.text << '\n';
+			//std::cerr << "Input: " << e.text.text << '\n';
 			text.insert(cursorpos, e.text.text);
 			cursorpos++;
 			break;
@@ -199,7 +199,6 @@ void TextBox::doEvent(SDL_Event e) {
 						cursorpos--;
 						text.erase(cursorpos, 1);
 					}
-					boop(cursorpos);
 					break;
 				case SDLK_LEFT:
 					if(cursorpos)
