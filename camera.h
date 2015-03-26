@@ -15,6 +15,8 @@ class Camera: public Entity {
 		Camera(double fov);
 		void renderMesh(Mesh *m, Surface *s);
 		void renderMeshes(World *w, Surface *s);
+
+		static bool isBackface(Vect4 v1, Vect4 v2, Vect4 v3);
 };
 
 #endif

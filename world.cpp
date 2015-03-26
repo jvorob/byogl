@@ -1,7 +1,7 @@
 #include "world.h"
 
 World::World() {
-
+	count = 0;
 }
 
 World::~World() {
@@ -37,11 +37,15 @@ int World::addMesh(Mesh *m) {
 	for(i = 0; i < meshes.size(); i++) {
 		if(meshes[i] == NULL) {
 			meshes[i] = m;
+			names[i] = std::to_string(count);
+			count++;
 			return i;
 		}
 	}
 
 	meshes.push_back(m);
+	names.push_back(std::to_string(count));
+	count++;
 	return i;
 }
 

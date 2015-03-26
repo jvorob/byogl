@@ -40,16 +40,20 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 	double offX = s->width / 2;
 	double offY = s->height / 2;
 
+	//Transform to screen coords
 	for(int i = 0; i < m->verts.size(); i++) {
 		transVerts[i].coord[0] = transVerts[i].coord[0] * pixScale + offX;
 		transVerts[i].coord[1] = transVerts[i].coord[1] * pixScale + offY;
 	}
 
-	//Draw faces with transformed vertices
+	//Draw wireframe faces with transformed vertices
 	for(int i = 0; i < m->faces.size(); i++) {
 		Vect4 v1 = transVerts[m->faces[i].v1];
 		Vect4 v2 = transVerts[m->faces[i].v2];
 		Vect4 v3 = transVerts[m->faces[i].v3];
+
+		if(isBackface(v1, v2, v3))
+			continue;
 
 		g.drawLine((int)v1.coord[0], (int)v1.coord[1], (int)v2.coord[0], (int)v2.coord[1]);
 		g.drawLine((int)v2.coord[0], (int)v2.coord[1], (int)v3.coord[0], (int)v3.coord[1]);
@@ -69,4 +73,8 @@ void Camera::renderMeshes(World *w, Surface *s) {
 
 		renderMesh(w->meshes[i], s);
 	}
+}
+
+bool Camera::isBackface(Vect4 v1, Vect4 v2, Vect4 v3) {
+	return Vect4::cross(v2 - v1, v3 - v1)[2] <= 0;
 }

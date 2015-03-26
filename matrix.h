@@ -24,6 +24,11 @@ class Vect4 {
 
 		//t0 = a, t1 = b, lerps between them
 		static Vect4 vLerp(Vect4 a, Vect4 b, double t);
+
+		static Vect4 cross(Vect4 l, Vect4 r);
+
+		//returns just the z component
+		static double crossZ(Vect4 l, Vect4 r);
 };
 
 class Mat4 {

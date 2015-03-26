@@ -14,6 +14,8 @@ enum e_hsv {
 	C_H = 0, C_S, C_V
 };
 
+class Point {int x; int y;};
+
 class Surface {
 	public:
 		int width, height;
@@ -46,6 +48,8 @@ class Graphics {
 		void setColor(char r, char g, char b);
 		inline void setPixel(char* pixel);
 		void drawLine(int x1, int y1, int x2, int y2);
+
+		//void fillTri(Point a, Point b, Point c);
 
 		int leftBound();
 		int rightBound();

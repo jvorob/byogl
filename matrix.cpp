@@ -226,3 +226,18 @@ Vect4 Vect4::vLerp(Vect4 a, Vect4 b, double t) {
 			lerp(a[1],b[1], t),
 			lerp(a[2],b[2], t));
 }
+
+//+X x +Z
+//0 - (1 0)
+//(0 * 1) - (1 1)
+//(1 0) - (0 0) 
+Vect4 Vect4::cross(Vect4 l, Vect4 r) {
+	return Vect4(
+			l[1] * r[2] - l[2] * r[1],
+			l[2] * r[0] - l[0] * r[2],
+			l[0] * r[1] - l[1] * r[0]);
+}
+
+double Vect4::crossZ(Vect4 l, Vect4 r) {
+	return l[1] * r[2] - l[2] * r[1];
+}

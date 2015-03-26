@@ -47,48 +47,14 @@ int main() {
 
 	//Prepare mesh
 	mesh = new Mesh(); //Not on heap
-	/*
 	mesh->loadFromObjFile("wt_teapot.obj");
 	mesh->setLocation(Vect4 (0, 0, -2));
 	mesh->setScale(1);
-	*/
 	//mesh->genPrimSphere(2);
 	//mesh->genPrimTorus(4, 2);
-	mesh->genPrimBox(4, 2, 3);
+	//mesh->genPrimBox(4, 2, 3);
 	w.addMesh(mesh);
 
-	/*
-	m.genPrimCircle(Vect4(0,0,0), 2);
-	m.genPrimCircle(Vect4(0,0,0), 0.8);
-	m.genPrimCircle(Vect4(0,0,0), 0.1);
-	m.genPrimCircle(Vect4(0,0,0), 0.01);
-	*/
-	/*
-	{
-		Vect4 a(-1,-1,0);
-		Vect4 b(0,-1,0);
-		Vect4 c(0,2,0);
-		Vect4 d(1,1,0);
-
-		m.genPrimCircle(a, 0.1);
-		m.genPrimCircle(b, 0.1);
-		m.genPrimCircle(c, 0.1);
-		m.genPrimCircle(d, 0.1);
-		m.genPrimBezier(a, b, c, d);
-	}
-	{
-		Vect4 p0(1,0,0);
-		Vect4 p1(-1,0,0);
-		Vect4 r0(0,-1,0);
-		Vect4 r1(0,1.5,0);
-
-		m.genPrimCircle(p0, 0.1);
-		m.genPrimCircle(p1, 0.1);
-		m.genPrimCircle(p0 + r0, 0.02);
-		m.genPrimCircle(p1 + r1, 0.02);
-		m.genPrimHermite(p0, p1, r0, r1);
-	}
-	*/
 
 	//Prepare render
 	Surface s (width, height);
