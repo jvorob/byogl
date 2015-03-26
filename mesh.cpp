@@ -274,8 +274,39 @@ void Mesh::genPrimHermite(Vect4 p0, Vect4 p1, Vect4 r0, Vect4 r1) {
 
 }
 
-void Mesh::genPrimBox() {
-	std::cerr << "genprimbox not implemented\n";
+void Mesh::genPrimBox(double lx, double ly, double lz) {
+	int v0 = addVert(Vect4( 0,  0,  0));
+	int v1 = addVert(Vect4(lx,  0,  0));
+	int v2 = addVert(Vect4( 0, ly,  0));
+	int v3 = addVert(Vect4( 0,  0, lz));
+	int v4 = addVert(Vect4( 0, ly, lz));
+	int v5 = addVert(Vect4(lx,  0, lz));
+	int v6 = addVert(Vect4(lx, ly,  0));
+	int v7 = addVert(Vect4(lx, ly, lz));
+
+	//0 xy face
+	addFace(Face(v0, v2, v1));
+	addFace(Face(v6, v1, v2));
+
+	//far xy face
+	addFace(Face(v3, v4, v5));
+	addFace(Face(v7, v5, v4));
+
+	//0 xz face
+	addFace(Face(v0, v1, v3));
+	addFace(Face(v5, v3, v1));
+
+	//far xz face
+	addFace(Face(v2, v6, v4));
+	addFace(Face(v7, v4, v6));
+
+	//0 yz face
+	addFace(Face(v0, v3, v2));
+	addFace(Face(v4, v2, v3));
+
+	//far yz face
+	addFace(Face(v1, v5, v6));
+	addFace(Face(v7, v6, v5));
 }
 
 void Mesh::genPrimSphere(double r) {
@@ -337,6 +368,56 @@ void Mesh::genPrimSphere(double r) {
 					points[(i + 1) % slices][j - 1], 
 					points[i][j - 1], 
 					points[(i + 1) % slices][j]));
+		}
+	}
+}
+
+void Mesh::genPrimTorus(double R, double r) {
+	const int circles = 20;
+	const int ppc = 15;//points per circle
+
+	double lastx, lasty, currx, curry;
+
+	int points[circles][ppc];
+
+	for(int i = 0; i < circles; i++) {
+		double phi = (TWOPI / circles) * i;
+
+		Mat4 currRot = Mat4::mult(Mat4::RotateYMat(phi), Mat4::TranslateMat(Vect4(R, 0 , 0)));
+
+		for(int j = 0; j < ppc; j++) {
+			double theta = (TWOPI / ppc) * j;
+
+			//theta 0 -> top, theta pi -> bottom
+			//phi 0 -> +x, goes counterclockwise from top
+
+			double vert = r * cos(theta);
+			double horiz = r * sin(theta);
+
+			Vect4 temp;
+			temp[0] = horiz;
+			temp[1] = vert;
+			temp[2] = 0;
+
+			points[i][j] = addVert(currRot.mult(temp));
+		}
+	}
+
+
+	//make body
+	for(int i = 0; i < circles; i++) {
+		for(int j = 0; j < ppc; j++) {
+			//bottomleft
+			addFace(Face(
+					points[i][j], 
+					points[i][(j + 1) % ppc], 
+					points[(i + 1) % circles][(j + 1) % ppc]));
+
+			//topright
+			addFace(Face(
+					points[(i + 1) % circles][j], 
+					points[i][j], 
+					points[(i + 1) % circles][(j + 1) % ppc]));
 		}
 	}
 }

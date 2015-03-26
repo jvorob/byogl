@@ -53,7 +53,7 @@ class Mesh: public Entity {
 		void genPrimBezier(Vect4 a, Vect4 b, Vect4 c, Vect4 d);
 		void genPrimHermite(Vect4 p0, Vect4 p1, Vect4 r0, Vect4 r1);
 
-		void genPrimBox();
+		void genPrimBox(double lx, double ly, double lz);
 		void genPrimSphere(double r);
 		void genPrimTorus(double R, double r);
 	private:
