@@ -76,5 +76,5 @@ void Camera::renderMeshes(World *w, Surface *s) {
 }
 
 bool Camera::isBackface(Vect4 v1, Vect4 v2, Vect4 v3) {
-	return Vect4::cross(v2 - v1, v3 - v1)[2] <= 0;
+	return Vect4::crossZ(v2 - v1, v3 - v1) <= 0;
 }

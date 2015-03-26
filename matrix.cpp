@@ -239,5 +239,5 @@ Vect4 Vect4::cross(Vect4 l, Vect4 r) {
 }
 
 double Vect4::crossZ(Vect4 l, Vect4 r) {
-	return l[1] * r[2] - l[2] * r[1];
+	return l[0] * r[1] - l[1] * r[0];
 }
