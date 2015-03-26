@@ -289,24 +289,24 @@ void Mesh::genPrimBox(double lx, double ly, double lz) {
 	addFace(Face(v6, v1, v2));
 
 	//far xy face
-	addFace(Face(v3, v4, v5));
-	addFace(Face(v7, v5, v4));
+	addFace(Face(v4, v3, v5));
+	addFace(Face(v5, v7, v4));
 
 	//0 xz face
 	addFace(Face(v0, v1, v3));
 	addFace(Face(v5, v3, v1));
 
 	//far xz face
-	addFace(Face(v2, v6, v4));
-	addFace(Face(v7, v4, v6));
+	addFace(Face(v6, v2, v4));
+	addFace(Face(v4, v7, v6));
 
 	//0 yz face
 	addFace(Face(v0, v3, v2));
 	addFace(Face(v4, v2, v3));
 
 	//far yz face
-	addFace(Face(v1, v5, v6));
-	addFace(Face(v7, v6, v5));
+	addFace(Face(v5, v1, v6));
+	addFace(Face(v6, v7, v5));
 }
 
 void Mesh::genPrimSphere(double r) {
@@ -350,8 +350,8 @@ void Mesh::genPrimSphere(double r) {
 				points[(i + 1) % slices][0]));
 		addFace(Face(
 				bot, 
-				points[i][pps - 2], 
-				points[(i + 1) % slices][pps - 2]));
+				points[(i + 1) % slices][pps - 2],
+				points[i][pps - 2]));
 	}
 
 	//make body

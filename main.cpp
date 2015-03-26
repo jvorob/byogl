@@ -47,12 +47,14 @@ int main() {
 
 	//Prepare mesh
 	mesh = new Mesh(); //Not on heap
+	/*
 	mesh->loadFromObjFile("wt_teapot.obj");
 	mesh->setLocation(Vect4 (0, 0, -2));
 	mesh->setScale(1);
+	*/
 	//mesh->genPrimSphere(2);
 	//mesh->genPrimTorus(4, 2);
-	//mesh->genPrimBox(4, 2, 3);
+	mesh->genPrimBox(4, 2, 3);
 	w.addMesh(mesh);
 
 
