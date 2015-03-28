@@ -16,7 +16,7 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 
 	temp = m->forwardMat();
 	//Temporary shift!!
-	temp = Mat4::mult(Mat4::TranslateMat(Vect4(0,0,-5)), temp);
+	temp = Mat4::mult(Mat4::TranslateMat(Vect4(0,0,-15)), temp);
 	temp = Mat4::mult(Mat4::ProjectPersp(), temp);
 
 	//Transform points
@@ -54,14 +54,15 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 		Vect4 v2 = transVerts[m->faces[i].v2];
 		Vect4 v3 = transVerts[m->faces[i].v3];
 
-		if(isBackface(v1, v2, v3))
-			continue;
 	
-		g.setColor(i * 30% 256, 150, 150);
+		g.setColor(i * 64 % 256, 150, 150);
+		if(isBackface(v1, v2, v3))
+			continue;//g.setColor(255, 0, 0);//continue;
+
 		g.fillTri(
-				Point {(int)v1.coord[0], (int)v1.coord[1]},
-				Point {(int)v2.coord[0], (int)v2.coord[1]},
-				Point {(int)v3.coord[0], (int)v3.coord[1]});
+				PointZ ((int)v1[0], (int)v1[1], v1[2]),
+				PointZ ((int)v2[0], (int)v2[1], v2[2]),
+				PointZ ((int)v3[0], (int)v3[1], v3[2]));
 	}
 
 	//Draw wireframe faces with transformed vertices
@@ -72,15 +73,11 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 		Vect4 v2 = transVerts[m->faces[i].v2];
 		Vect4 v3 = transVerts[m->faces[i].v3];
 
-		if(isBackface(v1, v2, v3))
-			continue;
-
-		g.drawLine((int)v1.coord[0], (int)v1.coord[1], (int)v2.coord[0], (int)v2.coord[1]);
-		g.drawLine((int)v2.coord[0], (int)v2.coord[1], (int)v3.coord[0], (int)v3.coord[1]);
-		g.drawLine((int)v3.coord[0], (int)v3.coord[1], (int)v1.coord[0], (int)v1.coord[1]);
+		g.drawLineZ((int)v1[0], (int)v1[1], v1[2], (int)v2[0], (int)v2[1], v2[2]);
+		g.drawLineZ((int)v2[0], (int)v2[1], v2[2], (int)v3[0], (int)v3[1], v3[2]);
+		g.drawLineZ((int)v3[0], (int)v3[1], v3[2], (int)v1[0], (int)v1[1], v1[2]);
 	}
 	*/
-
 
 	delete transVerts;
 }

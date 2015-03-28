@@ -15,7 +15,7 @@ double d2r(double d) {
 }
 
 double lerp(double a, double b, double t) {
-	return (1 - t) * a + t * b;
+	return (1.0 - t) * a + t * b;
 }
 
 void printSDLError() {

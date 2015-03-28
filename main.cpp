@@ -47,13 +47,13 @@ int main() {
 
 	//Prepare mesh
 	mesh = new Mesh(); //Not on heap
-	///*
+	/*
 	mesh->loadFromObjFile("wt_teapot.obj");
 	mesh->setLocation(Vect4 (0, 0, -2));
 	mesh->setScale(1);
-	//*/
+	*/
 	//mesh->genPrimSphere(2);
-	//mesh->genPrimTorus(4, 2);
+	mesh->genPrimTorus(4, 2);
 	//mesh->genPrimBox(4, 2, 3);
 	w.addMesh(mesh);
 
@@ -107,19 +107,6 @@ void runSDL() {
 		surface->clear(255);
 		camera->renderMesh(&(ui_sdl->dragMesh), surface);
 		camera->renderMeshes(world, surface);
-
-	/*
-		Point p1 {100, 300};
-		Point p2 {200, 100};
-		Point p3 {600, 100};
-
-		Graphics g(surface);
-		g.setColor(200,200,200);
-		g.fillTri(p1,p2,p3);
-		g.setColor(0,0,0);
-		g.drawLine(p1.x, p1.y, p2.x, p2.y);
-		g.drawLine(p1.x, p1.y, p3.x, p3.y);
-	*/
 
 		//Handle UI
 		ui_sdl->mainloop();
