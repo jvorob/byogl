@@ -15,6 +15,8 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 	double sf = 1;
 
 	temp = m->forwardMat();
+	//Temporary shift!!
+	temp = Mat4::mult(Mat4::TranslateMat(Vect4(0,0,-5)), temp);
 	temp = Mat4::mult(Mat4::ProjectPersp(), temp);
 
 	//Transform points
@@ -46,7 +48,25 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 		transVerts[i].coord[1] = transVerts[i].coord[1] * pixScale + offY;
 	}
 
+	//Draw Triangles
+	for(int i = 0; i < m->faces.size(); i++) {
+		Vect4 v1 = transVerts[m->faces[i].v1];
+		Vect4 v2 = transVerts[m->faces[i].v2];
+		Vect4 v3 = transVerts[m->faces[i].v3];
+
+		if(isBackface(v1, v2, v3))
+			continue;
+	
+		g.setColor(i * 30% 256, 150, 150);
+		g.fillTri(
+				Point {(int)v1.coord[0], (int)v1.coord[1]},
+				Point {(int)v2.coord[0], (int)v2.coord[1]},
+				Point {(int)v3.coord[0], (int)v3.coord[1]});
+	}
+
 	//Draw wireframe faces with transformed vertices
+	/*
+	g.setColor(0,0,0);
 	for(int i = 0; i < m->faces.size(); i++) {
 		Vect4 v1 = transVerts[m->faces[i].v1];
 		Vect4 v2 = transVerts[m->faces[i].v2];
@@ -58,8 +78,8 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 		g.drawLine((int)v1.coord[0], (int)v1.coord[1], (int)v2.coord[0], (int)v2.coord[1]);
 		g.drawLine((int)v2.coord[0], (int)v2.coord[1], (int)v3.coord[0], (int)v3.coord[1]);
 		g.drawLine((int)v3.coord[0], (int)v3.coord[1], (int)v1.coord[0], (int)v1.coord[1]);
-	
 	}
+	*/
 
 
 	delete transVerts;

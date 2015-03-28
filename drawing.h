@@ -14,7 +14,7 @@ enum e_hsv {
 	C_H = 0, C_S, C_V
 };
 
-class Point {int x; int y;};
+class Point {public: int x; int y;};
 
 class Surface {
 	public:
@@ -49,13 +49,13 @@ class Graphics {
 		inline void setPixel(char* pixel);
 		void drawLine(int x1, int y1, int x2, int y2);
 
-		//void fillTri(Point a, Point b, Point c);
 
 		int leftBound();
 		int rightBound();
 		int topBound();
 		int bottomBound();
 		
+		void fillTri(Point a, Point b, Point c);
 	private:
 		const int INSIDE = 0; // 0000
 		const int LEFT = 1;   // 0001
@@ -73,6 +73,10 @@ class Graphics {
 		void drawLineQ2(int x1, int y1, int dx, int dy);
 		void drawLineQ3(int x1, int y1, int dx, int dy);
 		void drawLineQ4(int x1, int y1, int dx, int dy);
+
+		//Fills a trapezoid
+		//top y, bot y, x left(top), delta x left (top->bottom), x right (top), delta x right
+		void fillTrap(int ty, int by, int xl, int dxl, int xr, int dxr);
 };
 
 void make_hsv_to_rgb(int *ptr); //converts the pixel being pointed to

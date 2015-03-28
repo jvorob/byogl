@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 #include "drawing.h"
+#include "util.h"
 
 using std::cout;
 using std::cerr;
@@ -289,6 +290,164 @@ using std::endl;
 	int Graphics::rightBound() {return target->width - 1;}
 	int Graphics::topBound() {return 0;}
 	int Graphics::bottomBound() {return target->height - 1;}
+
+	//Triangles
+	void Graphics::fillTri(Point a, Point b, Point c) {
+		Point h, m, l;
+		
+		//Sort points by y
+		if(a.y < b.y) {
+			if(a.y < c.y) {
+				h = a;
+				if(b.y < c.y) {
+					m = b;
+					l = c;
+				} else {
+					m = c;
+					l = b;
+				}
+			} else {
+				h = c;
+				m = a;
+				l = b;
+			}
+		} else {
+			if(b.y < c.y) {
+				h = b;
+				if(a.y < c.y) {
+					m = a;
+					l = c;
+				} else {
+					m = c;
+					l = a;
+				}
+			} else {
+				h = c;
+				m = b;
+				l = a;
+			}
+		}
+		//Done sorting
+
+		if(h.y == m.y && m.y == l.y) {
+			//degenerate tri
+			//should do something, but not now
+			cerr <<"Degenerate triangle\n";
+			return;
+		}
+
+		if(h.y == m.y) {
+			Point tl, tr;
+			if(h.x < m.x) {
+				tl = h;
+				tr = m;
+			} else {
+				tl = m;
+				tr = h;
+			}
+
+			fillTrap(tl.y, l.y, tl.x, l.x - tl.x, tr.x, l.x - tr.x);
+			return;
+		}
+		if(m.y == l.y) {
+			Point bl, br;
+			if(m.x < l.x) {
+				bl = m;
+				br = l;
+			} else {
+				bl = l;
+				br = m;
+			}
+
+			fillTrap(h.y, bl.y, h.x, bl.x - h.x, h.x, br.x - h.x);
+			return;
+		}
+
+		int dxl, dxt, dxb; //deltax long, deltax top, deltax bot
+		int dyl, dyt, dyb;
+
+		dxl = l.x - h.x;
+		dxt = m.x - h.x;
+		dxb = b.x - m.x;
+
+		dyl = l.y - h.y;
+		dyt = m.y - h.y;
+		dyb = b.y - m.y;
+
+		Point m2 = { h.x + dxl * dyt / dyl , h.y + dyt};
+
+		Point ml, mr; //mid left, mid right
+	
+		if(m2.x < m.x) {
+			ml = m2;
+			mr = m;
+		} else {
+			ml = m;
+			mr = m2;
+		}
+
+
+		fillTrap(h.y, m.y, h.x, ml.x - h.x, h.x, mr.x - h.x);
+		fillTrap(ml.y, l.y, ml.x, l.x - ml.x, mr.x, l.x - mr.x);
+	}
+
+//top y, bot y, x left(top), delta x left (top->bottom), x right (top), delta x right
+void Graphics::fillTrap(int ty, int by, int xl, int dxl, int xr, int dxr) {
+	/*
+	drawLine(tl.x, tl.y, tl.x + tw, tl.y);
+	drawLine(bl.x, bl.y, bl.x + bw, bl.y);
+	drawLine(tl.x, tl.y, bl.x, bl.y);
+	drawLine(tl.x + tw, tl.y, bl.x + bw, bl.y);
+	*/
+
+	int dy = by - ty;
+
+	int offl = dxl / dy / 2;
+	int offr = dxr / dy / 2;
+
+	int errl = offl;
+	int errr = offr;
+
+	int udxl = (dxl > 0) ? 1 : -1;
+	int udxr = (dxr > 0) ? 1 : -1;
+	int pdxl = dxl > 0 ? dxl : -1 * dxl;
+	int pdxr = dxr > 0 ? dxr : -1 * dxr;
+
+
+	for(int i = ty; i <= ty + dy; i++) {
+		if(pdxl < dy) { //Sloping more downwards
+			errl += pdxl;
+			if(errl > dy ) {
+				xl += udxl;
+				errl -= dy;
+			}
+		} else { //sloping more horizontally
+			while(errl >= pdxl) {
+				errl -= dy;
+				xl += udxl;
+			}
+			errl += pdxl;
+		}
+
+		if(pdxr < dy) { //Sloping more downwards
+			errr += pdxr;
+			if(errr > dy ) {
+				xr += udxr;
+				errr -= dy;
+			}
+		} else { //sloping more horizontally
+			while(errr >= pdxr) {
+				errr -= dy;
+				xr += udxr;
+			}
+			errr += pdxr;
+		}
+
+		for(int j = xl; j <= xr; j++) {
+			setPixel(target->index(j, i));
+		}
+	}
+}
 
 //End Graphics Definitions
 //========================
