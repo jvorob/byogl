@@ -47,8 +47,9 @@ UI_SDL::UI_SDL(Surface *s, World *w) {
 
 	setTool(0);
 
+	//Shape selector buttons
 	for(int i = 0; i < END; i++) {
-		toolButtons[i] = new Button({804, 100 + 30 * i}, toolString(i));
+		toolButtons[i] = new Button({804 + 100 * (i / 4), 100 + 30 * (i % 4)}, toolString(i));
 		toolButtons[i]->setHandler(this);
 
 		widgets.push_back(toolButtons[i]);
@@ -312,6 +313,15 @@ std::string UI_SDL::toolString(int n) {
 		case Bezier:
 			return "Bezier";
 			break;
+		case Box:
+			return "Box";
+			break;
+		case Sphere:
+			return "Sphere";
+			break;
+		case Torus:
+			return "Torus";
+			break;
 	}
 
 	return "Unkown";
@@ -338,7 +348,6 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 
 					//If a center has been picked, draw the temp circle
 					if(toolstate == 1) {
-
 						Vect4 delta = screenToWorld(p) - clicks[0];
 						double mag = delta.magnitude();
 
@@ -401,6 +410,38 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 						}
 					}
 					break;
+				case Box:
+					dragMesh.clear();
+
+					//If a start point has been picked, draw the temp box
+					if(toolstate == 1) {
+						Vect4 end = screenToWorld(p);
+
+						dragMesh.genPrimBox(end[0], end[1], end[1]);
+					}
+					break;
+				case Sphere:
+					dragMesh.clear();
+
+					//If a center has been picked, draw the temp sphere
+					if(toolstate == 1) {
+
+						Vect4 delta = screenToWorld(p) - clicks[0];
+						double mag = delta.magnitude();
+
+						dragMesh.genPrimSphere(mag);
+					}
+					break;
+				case Torus:
+					dragMesh.clear();
+
+					//If a start point has been picked, draw the temp torus
+					if(toolstate == 1) {
+						Vect4 end = screenToWorld(p);
+
+						dragMesh.genPrimTorus(end[0], end[1]);
+					}
+					break;
 				default:
 					break;
 			}
@@ -411,10 +452,11 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 			switch(currtool) {
 				//keep track of the starting click
 				case Circle:
-					clicks[0] = screenToWorld(p);
-					toolstate = 1;
-					break;
 				case Line:
+				case Box:
+				case Sphere:
+				case Torus:
+					//All of these just store the start point
 					clicks[0] = screenToWorld(p);
 					toolstate = 1;
 					break;
@@ -441,14 +483,10 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 		case SDL_MOUSEBUTTONUP:
 			switch(currtool) {
 				case Circle:
-					//Make it so
-					if(toolstate == 1) {
-						world->addMesh(new Mesh(dragMesh));
-						dragMesh.clear();
-						toolstate = 0;
-					}
-					break;
 				case Line:
+				case Sphere:
+				case Box:
+				case Torus:
 					//Make it so
 					if(toolstate == 1) {
 						world->addMesh(new Mesh(dragMesh));

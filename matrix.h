@@ -10,6 +10,7 @@ class Vect4 {
 		Vect4();
 		Vect4(double x, double y, double z);
 
+		//w is still 1
 		static Vect4 Zero();
 
 		double& operator[] (const int& i);

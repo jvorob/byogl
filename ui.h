@@ -48,6 +48,9 @@ class UI_SDL : public ButtonHandler{
 			Line,
 			Hermite,
 			Bezier,
+			Box,
+			Sphere,
+			Torus,
 			END,
 		};
 
