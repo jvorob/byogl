@@ -525,6 +525,15 @@ PointZ::PointZ() {}
 
 	//Triangles
 	void Graphics::fillTri(PointZ a, PointZ b, PointZ c) {
+		int ocA, ocB, ocC;
+		ocA = ComputeOutCode(a.x, a.y);
+		ocB = ComputeOutCode(b.x, b.y);
+		ocC = ComputeOutCode(c.x, c.y);
+
+		if(ocA & ocB & ocC) { //all out on the same side
+			return;
+		}
+
 		PointZ h, m, l;
 		
 		if(a.z > -0.8)
