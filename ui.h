@@ -44,21 +44,23 @@ class UI_SDL : public ButtonHandler{
 		void setupWindow();
 
 		enum Tool{ 
-			Circle, 
-			Line,
-			Hermite,
-			Bezier,
-			Box,
-			Sphere,
-			Torus,
-			END,
+			T_Circle, 
+			T_Line,
+			T_Hermite,
+			T_Bezier,
+			T_Box,
+			T_Sphere,
+			T_Torus,
+			T_END,
 		};
 
 		//Widgets
 		std::vector<Widget *> widgets;
 		Label *toolLabel;
-		Button *toolButtons[END];
+		Button *toolButtons[T_END];
 		Widget *canvasArea;
+		Button *prevMesh, *nextMesh;
+		Label *meshName;
 		//TextBox *testTextBox;
 		//NumBox *testNumBox;
 

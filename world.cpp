@@ -27,6 +27,7 @@ void World::buryDead() {
 				delete meshes[i];
 
 			meshes[i] = NULL;
+			count--;
 		}
 	}
 }

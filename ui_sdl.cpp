@@ -42,13 +42,14 @@ UI_SDL::UI_SDL(Surface *s, World *w) {
 	//Prepare Widgets
 	focusedWidget = NULL;
 	
-	toolLabel = new Label({804, 80}, "This is a label! Woop woop :)");
+	//Curent tool name label
+	toolLabel = new Label({804, 80}, "");
 	widgets.push_back(toolLabel);
 
 	setTool(0);
 
 	//Shape selector buttons
-	for(int i = 0; i < END; i++) {
+	for(int i = 0; i < T_END; i++) {
 		toolButtons[i] = new Button({804 + 100 * (i / 4), 100 + 30 * (i % 4)}, toolString(i));
 		toolButtons[i]->setHandler(this);
 
@@ -63,6 +64,7 @@ UI_SDL::UI_SDL(Surface *s, World *w) {
 	widgets.push_back(testNumBox);
 	*/
 
+	//Transformation input
 	std::string coords[] = {"X", "Y", "Z"};
 	widgets.push_back(new Label({804, 274},  "Rotate"));
 	widgets.push_back(new Label({954, 274},  "Translate"));
@@ -83,15 +85,26 @@ UI_SDL::UI_SDL(Surface *s, World *w) {
 		widgets.push_back(scaleNumBoxes[i]);
 
 	}
-
 	
-
+	//Canvas widget
 	canvasArea = new Widget();
 	canvasArea->bounds.x = 0;
 	canvasArea->bounds.y = 0;
 	canvasArea->bounds.w = s->width;
 	canvasArea->bounds.h = s->height;
 	widgets.push_back(canvasArea);
+
+	//Mesh selector widgets
+	prevMesh = new Button({804, 400}, "Prev.");
+	prevMesh->setHandler(this);
+	widgets.push_back(prevMesh);
+
+	nextMesh = new Button({874, 400}, "Next");
+	nextMesh->setHandler(this);
+	widgets.push_back(nextMesh);
+
+	meshName = new Label({804, 380}, "Boop");
+	widgets.push_back(meshName);
 }
 
 void UI_SDL::setupWindow() {
@@ -270,10 +283,15 @@ void UI_SDL::mainloop() {
 int UI_SDL::isPaused() { return paused;}
 
 void UI_SDL::handleButton(Button *b) {
-	for(int i = 0; i < END; i++) {
+	for(int i = 0; i < T_END; i++) {
 		if(b == toolButtons[i]) {
 			setTool(i);
+			return;
 		}
+	}
+
+	if(b == prevMesh) {
+	} else if(b == nextMesh) {
 	}
 }
 
@@ -287,9 +305,9 @@ void UI_SDL::setTool(int t) {
 	currtool = t;
 
 	if(currtool < 0) {
-		currtool += END;
+		currtool += T_END;
 	}
-	currtool %= END;
+	currtool %= T_END;
 
 	//Clear any partial progress
 	toolstate = 0;
@@ -301,30 +319,30 @@ void UI_SDL::setTool(int t) {
 
 std::string UI_SDL::toolString(int n) {
 	switch (n) {
-		case Circle:
+		case T_Circle:
 			return "Circle";
 			break;
-		case Line:
+		case T_Line:
 			return "Line";
 			break;
-		case Hermite:
+		case T_Hermite:
 			return "Hermite";
 			break;
-		case Bezier:
+		case T_Bezier:
 			return "Bezier";
 			break;
-		case Box:
+		case T_Box:
 			return "Box";
 			break;
-		case Sphere:
+		case T_Sphere:
 			return "Sphere";
 			break;
-		case Torus:
+		case T_Torus:
 			return "Torus";
 			break;
 	}
 
-	return "Unkown";
+	return "Unknown";
 }
 
 Vect4 UI_SDL::screenToWorld(const SDL_Point p) {
@@ -343,7 +361,7 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 			p.x = e.motion.x;
 			p.y = e.motion.y;
 			switch(currtool) {
-				case Circle:
+				case T_Circle:
 					dragMesh.clear();
 
 					//If a center has been picked, draw the temp circle
@@ -354,7 +372,7 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 						dragMesh.genPrimCircle(clicks[0], mag);
 					}
 					break;
-				case Line:
+				case T_Line:
 					dragMesh.clear();
 
 					//If a center has been picked, draw the temp circle
@@ -364,7 +382,7 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 						dragMesh.genPrimEdge(clicks[0], end);
 					}
 					break;
-				case Hermite:
+				case T_Hermite:
 					dragMesh.clear();
 					
 					if(toolstate >= 1) {
@@ -387,7 +405,7 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 						}
 					}
 					break;
-				case Bezier:
+				case T_Bezier:
 					dragMesh.clear();
 					
 					if(toolstate >= 1) {
@@ -410,7 +428,7 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 						}
 					}
 					break;
-				case Box:
+				case T_Box:
 					dragMesh.clear();
 
 					//If a start point has been picked, draw the temp box
@@ -420,7 +438,7 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 						dragMesh.genPrimBox(end[0], end[1], end[1]);
 					}
 					break;
-				case Sphere:
+				case T_Sphere:
 					dragMesh.clear();
 
 					//If a center has been picked, draw the temp sphere
@@ -432,7 +450,7 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 						dragMesh.genPrimSphere(mag);
 					}
 					break;
-				case Torus:
+				case T_Torus:
 					dragMesh.clear();
 
 					//If a start point has been picked, draw the temp torus
@@ -451,16 +469,16 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 			p.y = e.button.y;
 			switch(currtool) {
 				//keep track of the starting click
-				case Circle:
-				case Line:
-				case Box:
-				case Sphere:
-				case Torus:
+				case T_Circle:
+				case T_Line:
+				case T_Box:
+				case T_Sphere:
+				case T_Torus:
 					//All of these just store the start point
 					clicks[0] = screenToWorld(p);
 					toolstate = 1;
 					break;
-				case Hermite:
+				case T_Hermite:
 					if(toolstate == 0 || toolstate == 2) {
 						clicks[toolstate] = screenToWorld(p);
 						toolstate++;
@@ -468,7 +486,7 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 						std::cerr << "ERR in mousedown Hermite\n";
 					}
 					break;
-				case Bezier:
+				case T_Bezier:
 					if(toolstate == 0 || toolstate == 2) {
 						clicks[toolstate] = screenToWorld(p);
 						toolstate++;
@@ -482,11 +500,11 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 			break;
 		case SDL_MOUSEBUTTONUP:
 			switch(currtool) {
-				case Circle:
-				case Line:
-				case Sphere:
-				case Box:
-				case Torus:
+				case T_Circle:
+				case T_Line:
+				case T_Sphere:
+				case T_Box:
+				case T_Torus:
 					//Make it so
 					if(toolstate == 1) {
 						world->addMesh(new Mesh(dragMesh));
@@ -494,7 +512,7 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 						toolstate = 0;
 					}
 					break;
-				case Hermite:
+				case T_Hermite:
 					if(toolstate == 1 || toolstate == 3) {
 						SDL_Point p;
 						p.x = e.button.x;
@@ -517,7 +535,7 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 						toolstate = 0;
 					}
 					break;
-				case Bezier:
+				case T_Bezier:
 					if(toolstate == 1 || toolstate == 3) {
 						SDL_Point p;
 						p.x = e.button.x;
