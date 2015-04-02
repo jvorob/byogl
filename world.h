@@ -4,6 +4,7 @@
 #include "mesh.h"
 
 #include <vector>
+#include <string>
 
 class World {
 	public:
@@ -15,10 +16,23 @@ class World {
 		~World();
 
 		void buryDead();
-		int addMesh(Mesh *m);//returns its index
+
+		//returns its index
+		int addMesh(Mesh *m); //unnamed
+		int addMesh(Mesh *m, std::string name);
+
+		//Gets the next/prev non-null mesh
+		int nextMesh(int n);
+		int prevMesh(int n);
+
+		Mesh *getMesh(int n);
+		std::string getName(int n);
 
 	private:
 		int count;
+
+		//worker function for next/prev mesh
+		int meshCycler(int n, int delta);
 };
 
 

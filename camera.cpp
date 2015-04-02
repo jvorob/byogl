@@ -14,6 +14,9 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 	Mat4 temp = Mat4::IdentityMat();
 	double sf = 1;
 
+	Vect4 tempLighting = Vect4::unit(Vect4(1, 1, 2));
+	int *lightVals = new int[m->faces.size()];
+
 	temp = m->forwardMat();
 	//Temporary shift!!
 	temp = Mat4::mult(Mat4::TranslateMat(Vect4(0,0,-15)), temp);
@@ -22,6 +25,22 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 	//Transform points
 	for(int i = 0; i < m->verts.size(); i++) {
 		transVerts[i] = temp.mult(m->verts[i]);
+	}
+
+	//Grab light values
+	for(int i = 0; i < m->faces.size(); i++) {
+		Vect4 v1 = transVerts[m->faces[i].v1];
+		Vect4 v2 = transVerts[m->faces[i].v2];
+		Vect4 v3 = transVerts[m->faces[i].v3];
+
+		if(isBackface(v1, v2, v3))
+			continue;//g.setColor(255, 0, 0);//continue;
+	
+		double light = Vect4::dot(tempLighting, Vect4::unit(Vect4::cross(v2 - v1, v3 - v1)));
+		if(light > 0)
+			lightVals[i] = light * 255;
+		else
+			lightVals[i] = 0;
 	}
 
 	//Normalize w (only for x and y)
@@ -48,16 +67,19 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 		transVerts[i].coord[1] = transVerts[i].coord[1] * pixScale + offY;
 	}
 
+
+
 	//Draw Triangles
 	for(int i = 0; i < m->faces.size(); i++) {
 		Vect4 v1 = transVerts[m->faces[i].v1];
 		Vect4 v2 = transVerts[m->faces[i].v2];
 		Vect4 v3 = transVerts[m->faces[i].v3];
 
-	
-		g.setColor(i * 64 % 256, 150, 150);
 		if(isBackface(v1, v2, v3))
 			continue;//g.setColor(255, 0, 0);//continue;
+	
+		double l = lightVals[i];
+		g.setColor(l,l,l);
 
 		g.fillTri(
 				PointZ ((int)v1[0], (int)v1[1], v1[2]),

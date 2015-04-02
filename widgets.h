@@ -76,6 +76,18 @@ class Button : public Widget {
 		
 };
 
+class CheckBox : public Button {
+	public:
+		CheckBox(SDL_Point p, const std::string& s, bool *b);
+
+		void setBinding(bool *b);
+
+		void doEvent(SDL_Event e);
+		void draw(SDL_Renderer *r);
+	protected:
+		bool *binding;
+};
+
 class TextBox : public Widget {
 	public:
 		TextBox(SDL_Point p, const std::string& s);

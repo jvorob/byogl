@@ -1,5 +1,6 @@
 #include "ui.h"
 #include <iostream>
+#include <cmath>
 
 /*
 int SDL_PointInRect(SDL_Point *p, SDL_Rect *r) {
@@ -105,6 +106,10 @@ UI_SDL::UI_SDL(Surface *s, World *w) {
 
 	meshName = new Label({804, 380}, "Boop");
 	widgets.push_back(meshName);
+
+	//Pause button
+	pauseButton = new CheckBox({804, 40}, "Pause", &paused);
+	widgets.push_back(pauseButton);
 }
 
 void UI_SDL::setupWindow() {
@@ -291,8 +296,12 @@ void UI_SDL::handleButton(Button *b) {
 	}
 
 	if(b == prevMesh) {
+		currMesh = world->prevMesh(currMesh);
 	} else if(b == nextMesh) {
+		currMesh = world->nextMesh(currMesh);
 	}
+
+	meshName->setText(world->getName(currMesh));
 }
 
 //Tools:
@@ -457,7 +466,7 @@ bool UI_SDL::doToolEvents(SDL_Event e) {
 					if(toolstate == 1) {
 						Vect4 end = screenToWorld(p);
 
-						dragMesh.genPrimTorus(end[0], end[1]);
+						dragMesh.genPrimTorus(std::abs(end[0]), std::abs(end[1]));
 					}
 					break;
 				default:

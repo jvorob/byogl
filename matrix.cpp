@@ -241,3 +241,14 @@ Vect4 Vect4::cross(Vect4 l, Vect4 r) {
 double Vect4::crossZ(Vect4 l, Vect4 r) {
 	return l[0] * r[1] - l[1] * r[0];
 }
+
+double Vect4::dot(Vect4 l, Vect4 r) {
+	return 
+			l[0] * r[0] +
+			l[1] * r[1] +
+			l[2] * r[2];
+}
+
+Vect4 Vect4::unit(Vect4 v) {
+	return v * (1 / v.magnitude());
+}

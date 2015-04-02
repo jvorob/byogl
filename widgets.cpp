@@ -144,6 +144,47 @@ void Button::draw(SDL_Renderer *r) {
 	Font::drawString(r, {bounds.x + padding, bounds.y + padding}, text);
 }
 
+//Checkbox
+CheckBox::CheckBox(SDL_Point p, const std::string& s, bool *b) :
+	Button(p, s) 
+{
+	setBinding(b);
+}
+
+void CheckBox::setBinding(bool *b) {
+	binding = b;
+	if(binding) //if not bound
+		state = *binding ? DOWN : UP;
+	else
+		state = UP;
+}
+
+void CheckBox::doEvent(SDL_Event e) {
+	if(!binding)
+		return; //if not bound
+	switch (e.type) {
+		case SDL_MOUSEMOTION:
+		case SDL_WINDOWEVENT:
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			*binding = !*binding;
+			state = *binding ? DOWN : UP;
+			break;
+		default:
+			//if(DEBUGPRINT) 
+				fprintf(stderr, "UNKNOWN EVENT TYPE\n");
+			break;
+	}
+
+}
+
+void CheckBox::draw(SDL_Renderer *r) {
+	if(binding) //if not bound
+		state = *binding ? DOWN : UP;
+	else
+		state = UP;
+	Button::draw(r);
+}
 //TextBox
 TextBox::TextBox(SDL_Point p, const std::string& s) {
 	text = std::string(s);

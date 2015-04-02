@@ -36,7 +36,7 @@ class UI_SDL : public ButtonHandler{
 		Vect4 scale;
 	private: 
 		//Big Picture stuff ======
-		int paused = 0;
+		bool paused = 0;
 		World *world;
 		SDL_Renderer *ren;
 
@@ -61,8 +61,11 @@ class UI_SDL : public ButtonHandler{
 		Widget *canvasArea;
 		Button *prevMesh, *nextMesh;
 		Label *meshName;
+		CheckBox *pauseButton;
 		//TextBox *testTextBox;
 		//NumBox *testNumBox;
+
+		int currMesh; //currently selected mesh
 
 		NumBox *rotNumBoxes[3];
 		NumBox *scaleNumBoxes[3];

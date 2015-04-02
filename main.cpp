@@ -47,13 +47,13 @@ int main() {
 
 	//Prepare mesh
 	mesh = new Mesh(); //Not on heap
-	/*
+	///*
 	mesh->loadFromObjFile("wt_teapot.obj");
 	mesh->setLocation(Vect4 (0, 0, -2));
 	mesh->setScale(1);
-	*/
+	//*/
 	//mesh->genPrimSphere(2);
-	mesh->genPrimTorus(4, 2);
+	//mesh->genPrimTorus(4, 2);
 	//mesh->genPrimBox(4, 2, 3);
 	w.addMesh(mesh);
 
@@ -87,7 +87,7 @@ void runSDL() {
 	UI_SDL uis(surface, world);
 	ui_sdl = &uis;
 
-	world->addMesh(&ui_sdl->dragMesh);
+	//world->addMesh(&ui_sdl->dragMesh);
 
 	cout << "Initialized\n";
 
