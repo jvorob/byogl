@@ -5,7 +5,8 @@
 Entity::Entity() {
 	scale = Vect4(1,1,1);
 	loc = Vect4::Zero();
-	rotation = Mat4::IdentityMat();
+	rotation = Vect4::Zero();
+	rotmat = Mat4::IdentityMat();
 }
 
 
@@ -17,22 +18,25 @@ void Entity::setScale(double s) {//sets all of them to s
 	scale[2] = s;
 	scale[3] = 1;
 }
-void Entity::setRotation(double x, double y, double z) { // In rads
-	rotation = Mat4::IdentityMat();
-	rotation = Mat4::mult(Mat4::RotateZMat(z), rotation);
-	rotation = Mat4::mult(Mat4::RotateYMat(y), rotation);
-	rotation = Mat4::mult(Mat4::RotateXMat(x), rotation);
+void Entity::setRotation(Vect4 v) { // In rads
+	rotation = v;
+
+	rotmat = Mat4::IdentityMat();
+	rotmat = Mat4::mult(Mat4::RotateZMat(v[2]), rotmat);
+	rotmat = Mat4::mult(Mat4::RotateYMat(v[1]), rotmat);
+	rotmat = Mat4::mult(Mat4::RotateXMat(v[0]), rotmat);
 }
 
 Vect4 Entity::getLocation() { return loc; }
 Vect4 Entity::getScale() { return scale; }
+Vect4 Entity::getRotation() { return rotation; }
 
 Mat4 Entity::forwardMat() {
 	Mat4 temp;
 
 	//First scale things
 	//Then rotate things
-	temp = Mat4::mult(rotation, Mat4::ScaleMat(scale));
+	temp = Mat4::mult(rotmat, Mat4::ScaleMat(scale));
 
 	//Then translate them
 	temp = Mat4::mult(Mat4::TranslateMat(loc), temp);
@@ -48,7 +52,7 @@ Mat4 Entity::inverseMat() {
 
 	//Then rotate things
 	//Then scale them up
-	temp = Mat4::mult(rotation, temp);
+	temp = Mat4::mult(rotmat, temp);
 	temp = Mat4::mult(Mat4::ScaleMat(scale), temp);
 
 

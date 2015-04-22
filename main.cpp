@@ -49,6 +49,7 @@ int main() {
 	mesh = new Mesh(); //Not on heap
 	///*
 	mesh->loadFromObjFile("wt_teapot.obj");
+	//mesh->loadFromObjFile("testlandscape.obj");
 	mesh->setLocation(Vect4 (0, 0, -2));
 	mesh->setScale(1);
 	//*/
@@ -90,18 +91,19 @@ void runSDL() {
 	//world->addMesh(&ui_sdl->dragMesh);
 
 	cout << "Initialized\n";
+	
 
 	double i = 0;
 	while(!ui_sdl->quit) {
 		if(!ui_sdl->isPaused()) {
 			//Prepare mesh
 			i+=5;
-			mesh->setRotation(d2r(i / 3.92), d2r(i), 0);
+			mesh->setRotation(Vect4(d2r(i / 3.92), d2r(i), 0));
 		}
 
 		//mesh->setRotation(ui_sdl->rotation[0], ui_sdl->rotation[1], ui_sdl->rotation[2]);
-		mesh->setLocation(ui_sdl->translation);
-		mesh->setScale(ui_sdl->scale);
+		//mesh->setLocation(ui_sdl->translation);
+		//mesh->setScale(ui_sdl->scale);
 
 		//Render Mesh
 		surface->clear(255);

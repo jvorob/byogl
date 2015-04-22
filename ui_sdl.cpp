@@ -180,107 +180,103 @@ void UI_SDL::draw() {
 
 
 void UI_SDL::mainloop() {
-		SDL_Event e;
-		
+	SDL_Event e;
+	
 
-		//droppedframes = MAXDROPPEDFRAMES;
+	//droppedframes = MAXDROPPEDFRAMES;
 
-		draw();
-		SDL_RenderPresent(ren);
+	draw();
+	SDL_RenderPresent(ren);
 
-		
-		//fprintf(stderr, "b");
-		/*
-		if(SDL_GetTicks() - updatetime > 1000) {
-			updatetime = SDL_GetTicks();
-			if(DEBUGPRINT)
-				fprintf(stderr, "%d\n", tickspersecond);
-			tickspersecond = 0;
-		}
-		*/
+	
+	//fprintf(stderr, "b");
+	/*
+	if(SDL_GetTicks() - updatetime > 1000) {
+		updatetime = SDL_GetTicks();
+		if(DEBUGPRINT)
+			fprintf(stderr, "%d\n", tickspersecond);
+		tickspersecond = 0;
+	}
+	*/
 
-		//Get all events
-		while (SDL_PollEvent(&e) != 0 && !quit) {
+	//Get all events
+	while (SDL_PollEvent(&e) != 0 && !quit) {
 
-			//Set focus
-			if(e.type == SDL_MOUSEBUTTONDOWN) {
-				SDL_Point p;
-				p.x = e.button.x;
-				p.y = e.button.y;
+		//Set focus
+		if(e.type == SDL_MOUSEBUTTONDOWN) {
+			SDL_Point p;
+			p.x = e.button.x;
+			p.y = e.button.y;
 
-				int i;
-				for(i = 0; i < widgets.size(); i++) {
-					if(SDL_PointInRect(&p, &widgets[i]->bounds)) {
-						if(focusedWidget)
-							focusedWidget->loseFocus();
-						focusedWidget = widgets[i];
-						focusedWidget->gainFocus();
-						break;
-					}
-				}
-
-				//If clicked nowhere
-				if(i == widgets.size()) {
+			int i;
+			for(i = 0; i < widgets.size(); i++) {
+				if(SDL_PointInRect(&p, &widgets[i]->bounds)) {
 					if(focusedWidget)
 						focusedWidget->loseFocus();
-					focusedWidget = NULL;
+					focusedWidget = widgets[i];
+					focusedWidget->gainFocus();
+					break;
 				}
-
 			}
 
-			if(focusedWidget == canvasArea) {
-				if(doToolEvents(e))
-					continue;
+			//If clicked nowhere
+			if(i == widgets.size()) {
+				if(focusedWidget)
+					focusedWidget->loseFocus();
+				focusedWidget = NULL;
 			}
 
-			switch (e.type) {
-				case SDL_QUIT:
-					quit = 1;
-					break;
-				case SDL_USEREVENT:
-					/*
-					if(!droppedframes || uistate.paused)
-						break; //If it drops too many frames, clear the event queue
-					droppedframes--;
-					//fprintf(stderr, "c");
-					tickspersecond++;
-					for(i = 0; i < STEPSPERTICK; i++) {
-						doDemos(uistate.demoselected, mysim);
-						sim_step(mysim, TICKTIME);
-					}
-					//printGrid(mysim);
-					tparams.timerlock = 0;
-					*/
-					break;
-				case SDL_KEYDOWN:
-					switch(e.key.keysym.sym) {
-						case SDLK_p:
-							paused = !paused;
-							break;
-					}
-				case SDL_MOUSEMOTION:
-				case SDL_MOUSEBUTTONDOWN:
-				case SDL_MOUSEBUTTONUP:
-				case SDL_KEYUP:
-				case SDL_TEXTINPUT:
-				case SDL_TEXTEDITING:
-				case SDL_WINDOWEVENT:
-					if(focusedWidget) {
-						focusedWidget->doEvent(e);
-					}
-					break;
-				default:
-					//if(DEBUGPRINT) 
-						fprintf(stderr, "UNKNOWN EVENT TYPE\n");
-					break;
-			}
 		}
 
-	for(int i = 0; i < 3; i++) {
-		rotation[i] =		rotNumBoxes[i]->getNum();
-		translation[i] =	transNumBoxes[i]->getNum();
-		scale[i] =			scaleNumBoxes[i]->getNum();
+		if(focusedWidget == canvasArea) {
+			if(doToolEvents(e))
+				continue;
+		}
+
+		switch (e.type) {
+			case SDL_QUIT:
+				quit = 1;
+				break;
+			case SDL_USEREVENT:
+				/*
+				if(!droppedframes || uistate.paused)
+					break; //If it drops too many frames, clear the event queue
+				droppedframes--;
+				//fprintf(stderr, "c");
+				tickspersecond++;
+				for(i = 0; i < STEPSPERTICK; i++) {
+					doDemos(uistate.demoselected, mysim);
+					sim_step(mysim, TICKTIME);
+				}
+				//printGrid(mysim);
+				tparams.timerlock = 0;
+				*/
+				break;
+			case SDL_KEYDOWN:
+				switch(e.key.keysym.sym) {
+					case SDLK_p:
+						paused = !paused;
+						break;
+				}
+			case SDL_MOUSEMOTION:
+			case SDL_MOUSEBUTTONDOWN:
+			case SDL_MOUSEBUTTONUP:
+			case SDL_KEYUP:
+			case SDL_TEXTINPUT:
+			case SDL_TEXTEDITING:
+			case SDL_WINDOWEVENT:
+				if(focusedWidget) {
+					focusedWidget->doEvent(e);
+				}
+				break;
+			default:
+				//if(DEBUGPRINT) 
+					fprintf(stderr, "UNKNOWN EVENT TYPE\n");
+				break;
+		}
 	}
+
+	setMeshState();
 
 	return;
 }
@@ -295,13 +291,48 @@ void UI_SDL::handleButton(Button *b) {
 		}
 	}
 
-	if(b == prevMesh) {
-		currMesh = world->prevMesh(currMesh);
-	} else if(b == nextMesh) {
-		currMesh = world->nextMesh(currMesh);
+	if(b == prevMesh || b == nextMesh) {
+		if(b == prevMesh) {
+			currMesh = world->prevMesh(currMesh);
+		} else {
+			currMesh = world->nextMesh(currMesh);
+		}
+
+		readMeshState();
 	}
 
 	meshName->setText(world->getName(currMesh));
+}
+
+//Widgets
+void UI_SDL::setMeshState() {
+	Mesh *m = world->getMesh(currMesh);
+	Vect4 t = m->getLocation();
+	Vect4 s = m->getScale();
+	Vect4 r = m->getRotation();
+
+	for(int i = 0; i < 3; i++) {
+		r[i] =	rotNumBoxes[i]->getNum();
+		t[i] =	transNumBoxes[i]->getNum();
+		s[i] =	scaleNumBoxes[i]->getNum();
+	}
+
+	m->setRotation(r);
+	m->setLocation(t);
+	m->setScale(s);
+}
+
+void UI_SDL::readMeshState() {
+		Mesh *m = world->getMesh(currMesh);
+		Vect4 l = m->getLocation();
+		Vect4 s = m->getScale();
+		Vect4 r = m->getRotation();
+		
+		for(int i = 0; i < 3; i++) {
+			rotNumBoxes[i]->setNum(r[i]);
+			scaleNumBoxes[i]->setNum(s[i]);
+			transNumBoxes[i]->setNum(l[i]);
+		}
 }
 
 //Tools:

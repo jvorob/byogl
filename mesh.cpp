@@ -275,6 +275,10 @@ void Mesh::genPrimHermite(Vect4 p0, Vect4 p1, Vect4 r0, Vect4 r1) {
 }
 
 void Mesh::genPrimBox(double lx, double ly, double lz) {
+	lx *= lx > 0 ? 1 : -1;
+	ly *= ly > 0 ? 1 : -1;
+	lz *= lz > 0 ? 1 : -1;
+
 	int v0 = addVert(Vect4( 0,  0,  0));
 	int v1 = addVert(Vect4(lx,  0,  0));
 	int v2 = addVert(Vect4( 0, ly,  0));

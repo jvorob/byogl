@@ -65,6 +65,10 @@ class UI_SDL : public ButtonHandler{
 		//TextBox *testTextBox;
 		//NumBox *testNumBox;
 
+		//reads or sets the mesh transform for currmesh to/from the ui
+		void readMeshState();
+		void setMeshState();
+
 		int currMesh; //currently selected mesh
 
 		NumBox *rotNumBoxes[3];

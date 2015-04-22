@@ -24,16 +24,16 @@ clean:
 $(OUTFILE): $(OBJECTS);
 	g++ $(OBJECTS) $(LIBS)
 
-main.o: main.cpp drawing.h mesh.h util.h
+main.o: main.cpp drawing.h mesh.h entity.h util.h
 	g++ main.cpp $(CXX_FLAGS)
 	
 drawing.o: drawing.cpp drawing.h util.h
 	g++ drawing.cpp $(CXX_FLAGS)
 
-mesh.o: mesh.cpp mesh.h matrix.h util.h
+mesh.o: mesh.cpp mesh.h entity.h matrix.h util.h
 	g++ mesh.cpp $(CXX_FLAGS)
 
-camera.o: camera.cpp camera.h mesh.h drawing.h matrix.h util.h world.h
+camera.o: camera.cpp camera.h mesh.h entity.h drawing.h matrix.h util.h world.h
 	g++ camera.cpp $(CXX_FLAGS)
 
 matrix.o: matrix.cpp matrix.h util.h
@@ -48,7 +48,7 @@ ui_sdl.o: ui_sdl.cpp ui.h drawing.h util.h widgets.h
 entity.o: entity.cpp entity.h matrix.h util.h
 	g++ entity.cpp $(CXX_FLAGS)
 
-world.o: world.cpp world.h mesh.h camera.h util.h
+world.o: world.cpp world.h mesh.h entity.h camera.h util.h
 	g++ world.cpp $(CXX_FLAGS)
 
 widgets.o: widgets.cpp widgets.h

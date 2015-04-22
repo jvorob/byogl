@@ -34,13 +34,14 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 		Vect4 v3 = transVerts[m->faces[i].v3];
 
 		if(isBackface(v1, v2, v3))
-			continue;//g.setColor(255, 0, 0);//continue;
+			;//continue;//g.setColor(255, 0, 0);//continue;
 	
 		double light = Vect4::dot(tempLighting, Vect4::unit(Vect4::cross(v2 - v1, v3 - v1)));
-		if(light > 0)
+		if(light > 0) {
 			lightVals[i] = light * 255;
-		else
+		} else {
 			lightVals[i] = 0;
+		}
 	}
 
 	//Normalize w (only for x and y)
@@ -102,6 +103,7 @@ void Camera::renderMesh(Mesh *m, Surface *s) {
 	*/
 
 	delete transVerts;
+	delete lightVals;
 }
 
 void Camera::renderMeshes(World *w, Surface *s) {
